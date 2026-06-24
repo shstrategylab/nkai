@@ -816,12 +816,31 @@ function recalc() {
   const wti = parseFloat((document.getElementById('wti-value').textContent||'').replace('$',''))||NaN;
   const conflictTxt = document.getElementById('conflict-value').textContent;
   const conflict = conflictTxt.includes('매우') ? 'critical' : conflictTxt.includes('높음') ? 'high' : conflictTxt.includes('중간') ? 'mid' : 'low';
+
+  // ── 수출↑ + 원화약세 역설 감지 ──
+  const exportRateRaw = document.getElementById('export-value').textContent;
+  const exportRate2 = parseFloat(exportRateRaw) || NaN;
+  const krwRaw2 = document.getElementById('krw-value').textContent.replace(/[^0-9]/g,'');
+  const krw2 = parseFloat(krwRaw2) || NaN;
+  let paradox = false;
+  if (!isNaN(exportRate2) && exportRate2 >= 5 && !isNaN(krw2) && krw2 >= 1350) {
+    paradox = true;
+  }
+
+  // ── 외국인 매도 + 수출 호조 = 지정학 아닌 차익실현 가능성 판단 ──
+  const foreignTxt = document.getElementById('foreign-value').textContent.replace(/[^0-9\-]/g,'');
+  const foreignV = parseInt(foreignTxt) || 0;
+  const foreignExitNotGeo = (foreignV < -3000 && !isNaN(exportRate2) && exportRate2 >= 5);
+
   const bar2 = document.getElementById('alert-bar');
   const warns = [];
   if (!isNaN(vix) && vix >= 30) warns.push(`VIX ${vix.toFixed(1)} (공포)`);
   if (!isNaN(wti) && wti >= 90) warns.push(`WTI $${wti.toFixed(1)} (고유가)`);
   if (conflict === 'high' || conflict === 'critical') warns.push('분쟁 고강도');
   if (nk >= 3) warns.push(`北 도발 ${nk}건`);
+  if (paradox) warns.push('⚠ 수출호조 + 원화약세 역설 (외부개입 의심)');
+  if (foreignExitNotGeo) warns.push('외국인 매도 = 차익실현 가능 (재진입 추적 필요)');
+
   if (warns.length === 0) { bar2.className='alert-bar alert-ok'; bar2.textContent='✓ 안정 구간 — 정기 모니터링'; }
   else if (warns.length >= 2) { bar2.className='alert-bar alert-danger'; bar2.textContent='🚨 복합 경보: '+warns.join(' · '); }
   else { bar2.className='alert-bar alert-warn'; bar2.textContent='⚡ 경계: '+warns.join(' · '); }
@@ -863,8 +882,24 @@ function applyManual() {
   if(!isNaN(csi)) setCSI(csi);
   if(!isNaN(foreign)) {
     document.getElementById('foreign-value').textContent=(foreign>=0?'+':'')+foreign.toLocaleString()+'억';
-    const b=foreign<-5000?'badge-danger':foreign<0?'badge-warn':'badge-ok';
-    document.getElementById('foreign-status').innerHTML=`<span class="badge ${b}">${foreign<-5000?'대규모 이탈':foreign<0?'순매도':'순매수'}</span>`;
+    // 수출 증감률·환율과 교차해 성격 판단
+    const exportRate = parseFloat(document.getElementById('export-value').textContent) || NaN;
+    const krwRaw = document.getElementById('krw-value').textContent.replace(/[^0-9]/g,'');
+    const krw = parseFloat(krwRaw) || NaN;
+    let b, label;
+    if (foreign >= 0) {
+      b = 'badge-ok'; label = '순매수';
+    } else if (foreign < -5000) {
+      // 수출 호조 + 고환율 동반 시 → 차익실현 가능성
+      if (!isNaN(exportRate) && exportRate >= 5 && !isNaN(krw) && krw >= 1350) {
+        b = 'badge-warn'; label = '차익실현 매도 (수출 호조 주의)';
+      } else {
+        b = 'badge-danger'; label = '대규모 순매도 (원인 교차확인 필요)';
+      }
+    } else {
+      b = 'badge-warn'; label = '순매도 (방향 관찰 중)';
+    }
+    document.getElementById('foreign-status').innerHTML=`<span class="badge ${b}">${label}</span>`;
   }
   if(!isNaN(exportRate)) {
     document.getElementById('export-value').textContent=(exportRate>=0?'+':'')+exportRate.toFixed(1)+'%';
@@ -998,6 +1033,12 @@ function generatePrompt() {
   말·행동 간극(북·국제): ${gapNK}
   말·행동 간극(국내정치): ${gapDom}
 
+【교차 검증 메모 (자동 계산)】
+  수출 증감률   : ${exportV}
+  원/달러 환율  : ${krw}
+  ※ 수출 호조 + 원화약세가 동시에 나타나는 경우 → 단순 지정학 해석 금지, 외부 개입 가능성 검토 필요
+  ※ 외국인 순매도(${foreign}) — 수출 호조 동반 시 차익실현(valuation exit) 우선 가정, 재진입 타이밍 추적 요망
+
 【종합 임계점 지수】
   ${threshold}
 
@@ -1020,7 +1061,13 @@ ${newsBlock}
 3. 【지수축 분석】
    - 북한 도발 동향과 외교 접촉 균형 평가
    - 글로벌 분쟁 강도가 한반도에 미치는 영향
-   - 유가·외국인 자금 흐름의 지정학적 함의
+   - 유가·외국인 자금 흐름 교차 분석:
+     ① 외국인 순매도가 지정학 리스크인지 vs 차익실현(밸류에이션 exit)인지 구분 판단
+        — 수출 증감률·환율·재진입 패턴을 교차해 근거를 제시할 것
+        — 단순 이탈 경보로 단정짓지 말 것
+     ② 수출 호조(달러 유입 증가)에도 원화 약세가 지속될 경우, 시장 개입 세력 또는
+        의도적 환율 관리 가능성을 반드시 언급할 것
+     ③ 각 지표가 서로 모순되는 경우, 어떤 지표가 더 신뢰도가 높은지 판단 근거 제시
 
 4. 【인수축 분석】
    - 발언 톤 대결 % 수준의 의미 해석
