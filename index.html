@@ -98,11 +98,7 @@
   .ai-keywords { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
   .ai-kw { font-size:10px; padding:2px 8px; border-radius:99px; background:var(--bg3); color:var(--text3); border:0.5px dashed var(--border2); }
 
-  /* 만약 Make.com 웹훅 안내 박스 */
-  .info-box { background:var(--bg2); border:0.5px solid var(--border2); border-radius:8px; padding:14px 16px; margin-bottom:16px; font-size:12px; color:var(--text2); line-height:1.7; }
-  .info-box a { color:var(--blue); text-decoration:none; }
-  .info-box a:hover { text-decoration:underline; }
-  .info-box .info-title { font-size:11px; color:var(--text3); letter-spacing:0.06em; margin-bottom:8px; }
+
 
   /* 수동 입력 */
   .manual-section { background:var(--bg2); border:0.5px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px; }
@@ -118,13 +114,7 @@
   .apply-btn { background:none; border:0.5px solid var(--teal); color:var(--teal); padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; }
   .apply-btn:hover { background:var(--teal-bg); }
 
-  /* 웹훅 설정 */
-  .webhook-section { background:var(--bg2); border:0.5px solid var(--amber); border-radius:8px; padding:16px; margin-bottom:20px; }
-  .webhook-title { font-size:11px; color:var(--amber); letter-spacing:0.06em; margin-bottom:10px; }
-  .webhook-input { display:flex; gap:8px; }
-  .webhook-input input { flex:1; background:var(--bg3); border:0.5px solid var(--border2); color:var(--text); border-radius:6px; padding:7px 10px; font-size:12px; }
-  .webhook-input input:focus { outline:none; border-color:var(--amber); }
-  .webhook-save-btn { background:none; border:0.5px solid var(--amber); color:var(--amber); padding:6px 14px; border-radius:6px; font-size:12px; cursor:pointer; white-space:nowrap; }
+
 
   .divider { border:none; border-top:0.5px solid var(--border); margin:20px 0; }
   .footer { margin-top:24px; padding-top:16px; border-top:0.5px solid var(--border); font-size:11px; color:var(--text3); line-height:1.8; }
@@ -153,31 +143,18 @@
     <div class="chip"><span class="sdot idle" id="dot-wti"></span> WTI</div>
     <div class="chip"><span class="sdot idle" id="dot-solar"></span> 태양</div>
     <div class="chip"><span class="sdot idle" id="dot-ai"></span> AI분석</div>
-    <div class="chip" id="chip-webhook" style="border-color:var(--amber); color:var(--amber);">⚙ Make.com 미설정</div>
   </div>
 
   <!-- 경보 바 -->
   <div class="alert-bar alert-warn" id="alert-bar">⚡ 데이터 로딩 중...</div>
 
-  <!-- ── Make.com 웹훅 설정 ── -->
-  <div class="webhook-section">
-    <div class="webhook-title">⚙ 자동화 웹훅 설정 — Make.com (무료) 연동 시 VIX·WTI·CSI·RSS 자동 수집</div>
-    <div class="webhook-input">
-      <input type="text" id="webhook-url" placeholder="Make.com 웹훅 URL 붙여넣기 (https://hook.eu1.make.com/…)" />
-      <button class="webhook-save-btn" onclick="saveWebhook()">저장</button>
-      <button class="webhook-save-btn" style="border-color:var(--teal);color:var(--teal);" onclick="callWebhook()">▶ 호출</button>
-    </div>
-    <div style="font-size:10px; color:var(--text3); margin-top:8px;">
-      설정 방법 → <a href="#guide" style="color:var(--blue);">하단 가이드 참조</a> · Make.com 무료 플랜: 1,000 ops/월
-    </div>
-  </div>
 
   <!-- 천수축 -->
   <div class="axis-section">
     <div class="axis-header">
       <div class="axis-dot dot-red"></div>
       <div class="axis-title">천수축 (天數) — 주기·긴장 지표</div>
-      <span class="axis-badge">3/4 자동</span>
+      <span class="axis-badge">2/4 자동</span>
     </div>
     <div class="grid grid-4">
 
@@ -190,10 +167,9 @@
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">Make웹훅/수동</span>
-        <div class="mcard-label"><span class="badge badge-info" id="vix-badge">웹훅</span> VIX 공포지수</div>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> VIX 공포지수</div>
         <div class="mcard-value" id="vix-value">—</div>
-        <div class="mcard-sub" id="vix-status">웹훅 또는 수동 입력</div>
+        <div class="mcard-sub" id="vix-status">수동 입력</div>
         <a class="mcard-link" href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank">↗ Yahoo Finance</a>
       </div>
 
@@ -227,15 +203,14 @@
     <div class="axis-header">
       <div class="axis-dot dot-amber"></div>
       <div class="axis-title">지수축 (地數) — 한반도·지정학 지표</div>
-      <span class="axis-badge">1/6 자동 + 웹훅</span>
+      <span class="axis-badge">1/6 자동 + AI</span>
     </div>
     <div class="grid grid-4">
 
       <div class="mcard">
-        <span class="mcard-src">Make웹훅/수동</span>
-        <div class="mcard-label"><span class="badge badge-info" id="wti-badge">웹훅</span> 국제유가 WTI</div>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 국제유가 WTI</div>
         <div class="mcard-value" id="wti-value">—</div>
-        <div class="mcard-sub" id="wti-status">웹훅 또는 수동 입력</div>
+        <div class="mcard-sub" id="wti-status">수동 입력</div>
         <a class="mcard-link" href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank">↗ Yahoo Finance</a>
       </div>
 
@@ -285,15 +260,14 @@
     <div class="axis-header">
       <div class="axis-dot dot-teal"></div>
       <div class="axis-title">인수축 (人數) — 언어·행동·민심 지표</div>
-      <span class="axis-badge">웹훅+AI</span>
+      <span class="axis-badge">AI분석</span>
     </div>
     <div class="grid grid-3">
 
       <div class="mcard">
-        <span class="mcard-src">Make웹훅/수동</span>
-        <div class="mcard-label"><span class="badge badge-info" id="csi-badge">웹훅</span> 소비자심리지수 CSI</div>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 소비자심리지수 CSI</div>
         <div class="mcard-value" id="csi-value">—</div>
-        <div class="mcard-sub" id="csi-status">웹훅 또는 수동 입력</div>
+        <div class="mcard-sub" id="csi-status">수동 입력</div>
         <a class="mcard-link" href="https://ecos.bok.or.kr" target="_blank">↗ 한국은행 ECOS</a>
       </div>
 
@@ -394,32 +368,12 @@
     </div>
   </div>
 
-  <!-- Make.com 가이드 -->
-  <div class="info-box" id="guide">
-    <div class="info-title">📋 MAKE.COM 무료 자동화 설정 가이드 (10분 설정, 평생 무료)</div>
-    <div style="line-height:2;">
-    <b style="color:var(--text);">Step 1</b> — <a href="https://www.make.com" target="_blank">make.com</a> 가입 (무료) → [Create a scenario] 클릭<br>
-    <b style="color:var(--text);">Step 2</b> — 첫 모듈: <b style="color:var(--amber);">Webhooks → Custom webhook</b> 추가 → URL 복사 → 위 입력란에 붙여넣기<br>
-    <b style="color:var(--text);">Step 3</b> — HTTP 모듈 추가: <b style="color:var(--teal);">Yahoo Finance VIX</b><br>
-    &nbsp;&nbsp;&nbsp;URL: <code style="color:var(--teal);font-size:10px;">https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=1d</code><br>
-    &nbsp;&nbsp;&nbsp;→ Parse JSON → 추출: <code style="color:var(--teal);font-size:10px;">chart.result[0].meta.regularMarketPrice</code><br>
-    <b style="color:var(--text);">Step 4</b> — 동일하게 <b style="color:var(--teal);">WTI</b>(<code style="color:var(--text3);font-size:10px;">CL%3DF</code>), <b style="color:var(--teal);">통일부 RSS</b>, <b style="color:var(--teal);">외교부 RSS</b> 모듈 추가<br>
-    <b style="color:var(--text);">Step 5</b> — 마지막 모듈: <b style="color:var(--amber);">Webhooks → Webhook response</b><br>
-    &nbsp;&nbsp;&nbsp;Body에 JSON 조합: <code style="color:var(--text3);font-size:10px;">{"vix": {{vix}}, "wti": {{wti}}, "nk_news": "{{rss_summary}}"}</code><br>
-    <b style="color:var(--text);">Step 6</b> — [Schedule] → 매일 오전 9시 자동 실행 설정<br>
-    <br>
-    <span style="color:var(--text3);">Make.com 무료 플랜: 1,000 ops/월 (매일 실행 시 ~300 ops/월 소모). CSI는 </span>
-    <a href="https://ecos.bok.or.kr/api/" target="_blank">한국은행 ECOS API 무료 키</a>
-    <span style="color:var(--text3);"> 발급 후 동일 방식 추가 가능.</span>
-    </div>
-  </div>
 
   <div class="footer">
     본 현황판은 상수학적 프레임과 현대 데이터 지표를 결합한 개인 분석 도구입니다.<br>
     <b style="color:var(--text2);">완전 자동</b>: 환율(Open Exchange Rates CORS OK) · 태양흑점(NOAA SWPC CORS OK)<br>
-    <b style="color:var(--amber);">Make.com 웹훅</b>: VIX · WTI · CSI · RSS뉴스 → 서버사이드 수집 후 이 페이지로 전달 (CORS 우회)<br>
     <b style="color:var(--blue);">AI 분석</b>: GDELT 무료 API + Claude → 北도발 · 외교 · 분쟁강도 · 발언톤 · 간극 자동 추출<br>
-    <b style="color:var(--text3);">수동 유지</b>: 외국인순매수(KRX) · 수출증감률(월간)
+    <b style="color:var(--text3);">수동 유지</b>: VIX · WTI · CSI · 외국인순매수(KRX) · 수출증감률(월간)
   </div>
 
 </div>
@@ -504,129 +458,8 @@ async function loadSolar() {
 }
 
 // ══════════════════════════════════════════
-// 3. Make.com 웹훅 연동
-//    Make 시나리오가 VIX·WTI·CSI·뉴스를 수집해
-//    이 페이지로 JSON 응답 → CORS 완전 우회
-// ══════════════════════════════════════════
-function saveWebhook() {
-  const url = document.getElementById('webhook-url').value.trim();
-  if (!url) return;
-  localStorage.setItem('nkai-webhook', url);
-  updateWebhookChip(url);
-  alert('웹훅 URL 저장됨. ▶ 호출 버튼으로 테스트하세요.');
-}
-
-function loadWebhookURL() {
-  const saved = localStorage.getItem('nkai-webhook');
-  if (saved) {
-    document.getElementById('webhook-url').value = saved;
-    updateWebhookChip(saved);
-  }
-}
-
-function updateWebhookChip(url) {
-  const chip = document.getElementById('chip-webhook');
-  if (url) {
-    chip.textContent = '✓ Make.com 연동됨';
-    chip.style.borderColor = 'var(--teal)';
-    chip.style.color = 'var(--teal)';
-  }
-}
-
-async function callWebhook() {
-  const url = localStorage.getItem('nkai-webhook');
-  if (!url) { alert('웹훅 URL을 먼저 저장하세요.'); return; }
-
-  async function safeFetch(fetchPromise) {
-    const res = await fetchPromise;
-    const text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch(e) {
-      // Make.com 깨진 JSON 자동 복구
-      // 패턴: {"vix": "18.87", ", "wti": " 18.87"}
-      // 문제1: 값 뒤 ", " → ", 다음에 따옴표가 남음
-      // 문제2: 값 앞 공백
-      try {
-        // 정규식으로 키-값 쌍을 직접 추출 (JSON 구조 무관)
-        // "vix": "18.82" 또는 "vix": 18.82 패턴 매칭
-        const result = {};
-        const pattern = /"(\w+)"\s*:\s*"?\s*([0-9.]+)\s*"?/g;
-        let match;
-        while ((match = pattern.exec(text)) !== null) {
-          result[match[1]] = match[2];
-        }
-        if (Object.keys(result).length > 0) {
-          console.info('Webhook 키-값 직접 추출 성공:', result);
-          return result;
-        }
-        console.warn('Webhook non-JSON response:', text.substring(0, 100));
-        return null;
-      } catch(e2) {
-        console.warn('Webhook non-JSON response:', text.substring(0, 100));
-        return null;
-      }
-    }
-  }
-
-  try {
-    const data = await safeFetch(fetch(url, { method: 'GET' }));
-    if (data) { applyWebhookData(data); return; }
-  } catch(e) { /* GET 실패 → POST 시도 */ }
-
-  try {
-    const data2 = await safeFetch(fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'fetch' })
-    }));
-    if (data2) { applyWebhookData(data2); return; }
-    console.warn('Webhook call failed: 유효한 JSON 응답 없음 (Make.com 시나리오 응답 설정 확인)');
-  } catch(e2) {
-    console.warn('Webhook call failed:', e2);
-  }
-}
-
-function applyWebhookData(data) {
-  // Make.com에서 받은 데이터 적용
-  // 예상 JSON: { vix, wti, csi, nk_count, diploma_count, conflict, tone_pct, gap, summary }
-  if (data.vix !== undefined) {
-    const v = parseFloat(data.vix);
-    setVIX(v);
-    document.getElementById('input-vix').value = v;
-  }
-  if (data.wti !== undefined) {
-    const w = parseFloat(data.wti);
-    setWTI(w);
-    document.getElementById('input-wti').value = w;
-  }
-  if (data.csi !== undefined) {
-    const c = parseFloat(data.csi);
-    setCSI(c);
-    document.getElementById('input-csi').value = c;
-  }
-  if (data.nk_news || data.nk_count !== undefined) {
-    const nk = parseInt(data.nk_count) || 0;
-    document.getElementById('nk-bar').style.width = Math.min(nk*15,100)+'%';
-    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk===0?'저강도':nk<=2?'주의':'고강도'} (Make)`;
-  }
-  if (data.diploma_count !== undefined) {
-    const d = parseInt(data.diploma_count)||0;
-    document.getElementById('diploma-bar').style.width = Math.min(d*12,100)+'%';
-    document.getElementById('diploma-note').textContent = `이달 ${d}건 · ${d>=5?'활발':d>=2?'보통':'저조'} (Make)`;
-  }
-  // AI 분석 결과가 포함된 경우
-  if (data.conflict || data.tone_pct !== undefined || data.gap) {
-    applyAIResult(data);
-  }
-  recalc();
-  saveToLocal();
-}
-
-// ══════════════════════════════════════════
 // 4. GDELT + Claude API로 AI 분석
 //    GDELT: 완전 무료, 키 없음, CORS OK
-//    Claude API: Make.com 웹훅 통해 서버사이드 호출 (CORS 우회)
 // ══════════════════════════════════════════
 async function runAIAnalysis() {
   const btn = document.getElementById('ai-btn');
@@ -660,42 +493,11 @@ async function runAIAnalysis() {
       } catch(e) { continue; }
     }
 
-    // Make.com 웹훅을 통해 Claude API 호출 (서버사이드)
-    const webhookUrl = localStorage.getItem('nkai-webhook');
-    if (webhookUrl) {
-      document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">Make.com → Claude AI 분석 중...</span>';
-      try {
-        const res = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'ai_analyze',
-            gdelt_data: gdeltSummary,
-            date: now.toLocaleDateString('ko-KR')
-          })
-        });
-        const result = await res.json();
-        if (result && (result.nk_count !== undefined || result.conflict)) {
-          applyAIResult(result);
-          document.getElementById('ai-result-text').textContent = result.summary || 'AI 분석 완료';
-          if (result.keywords) {
-            document.getElementById('ai-keywords').innerHTML =
-              result.keywords.map(k => `<span class="ai-kw">${k}</span>`).join('');
-          }
-          document.getElementById('ai-panel-time').textContent = now.toLocaleTimeString('ko-KR');
-          dot('ai', 'ok');
-          recalc();
-          return;
-        }
-      } catch(e) { console.warn('Make webhook AI call failed:', e); }
-    }
-
-    // 웹훅 없는 경우 — GDELT 데이터로 규칙 기반 자동 분석 (AI 없이)
+    // GDELT 데이터로 규칙 기반 자동 분석
     document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">규칙 기반 분석 중...</span>';
     const ruleResult = ruleBasedAnalysis(gdeltSummary);
     applyAIResult(ruleResult);
-    document.getElementById('ai-result-text').textContent =
-      ruleResult.summary + '\n\n[Make.com 웹훅 설정 시 Claude AI 정밀 분석 가능]';
+    document.getElementById('ai-result-text').textContent = ruleResult.summary;
     document.getElementById('ai-panel-time').textContent = now.toLocaleTimeString('ko-KR');
     dot('ai', 'ok');
     recalc();
@@ -736,7 +538,7 @@ function ruleBasedAnalysis(text) {
     conflict,
     tone_pct,
     gap,
-    summary: `GDELT 뉴스 분석 (규칙 기반): 북한 관련 ${nk_count}건 신호, 분쟁강도 ${conflict}, 대결 발언 ${tone_pct}%. Make.com 웹훅 설정 시 Claude AI 정밀 분석으로 전환됩니다.`,
+    summary: `GDELT 뉴스 분석 (규칙 기반): 북한 관련 ${nk_count}건 신호, 분쟁강도 ${conflict}, 대결 발언 ${tone_pct}%.`,
     keywords: nkKeywords.filter(k => t.includes(k)).slice(0,3).concat(conflictKeywords.filter(k=>t.includes(k)).slice(0,2))
   };
 }
@@ -907,18 +709,13 @@ function restoreFromLocal() {
 async function loadAllData() {
   document.getElementById('last-updated').textContent='새로고침 중...';
   await Promise.all([loadKRW(), loadSolar()]);
-  // 웹훅이 있으면 자동 호출
-  if (localStorage.getItem('nkai-webhook')) {
-    await callWebhook();
-  }
   const now=new Date();
   document.getElementById('last-updated').textContent=
     `최종 갱신 ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
-// 초기화 — loadAllData 완료 후 restoreFromLocal 실행 (순서 보장)
+// 초기화
 setDate();
-loadWebhookURL();
 loadAllData().then(() => restoreFromLocal());
 </script>
 </body>
