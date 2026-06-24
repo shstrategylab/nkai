@@ -398,18 +398,20 @@
           <label>
             글로벌 분쟁 강도
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글 뉴스: 현재 진행 중인 전쟁·분쟁 건수 파악 -->
-              <a href="https://www.google.com/search?q=ACLED+2026+분쟁+사건+건수+월간+통계" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: ACLED 월간 분쟁 건수 수치">🔍</a>
-              <a href="https://acleddata.com/dashboard/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="ACLED 분쟁 대시보드">↗</a>
+              <!-- 구글 뉴스: 이번 주 주요 전쟁·분쟁 상황 파악 후 직접 판단 입력 -->
+              <a href="https://www.google.com/search?q=전쟁+분쟁+현황+2026년+6월+이번주&tbm=nws" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글 뉴스: 이번 주 전쟁·분쟁 현황">🔍뉴스</a>
+              <a href="https://www.google.com/search?q=war+conflict+escalation+this+week+2026&tbm=nws" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글 영문 뉴스: 이번 주 분쟁 격화">🔍EN</a>
+              <a href="https://acleddata.com/dashboard/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="ACLED 분쟁 대시보드 (전문가용)">↗ACLED</a>
             </span>
           </label>
           <select id="input-conflict">
             <option value="">선택</option>
-            <option value="low">낮음</option>
-            <option value="mid">중간</option>
-            <option value="high">높음</option>
-            <option value="critical">매우 높음</option>
+            <option value="low">낮음 — 산발적 소규모</option>
+            <option value="mid">중간 — 복수 지역 진행 중</option>
+            <option value="high">높음 — 주요 분쟁 격화</option>
+            <option value="critical">매우 높음 — 대규모 확전 국면</option>
           </select>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">※ 공식 통계 없음 — 뉴스 검색 후 직접 판단 입력</div>
         </div>
 
         <div class="manual-item">
@@ -807,9 +809,13 @@ function recalc() {
 
   const bar = document.getElementById('threshold-bar');
   bar.style.width = Math.round(score) + '%';
-  if (score >= 70) { bar.style.background = 'var(--red)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 충돌 가능성 높음`; }
-  else if (score >= 40) { bar.style.background = 'var(--amber)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 경계 구간`; }
-  else { bar.style.background = 'var(--teal)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 안정 구간`; }
+  // 임계점 바 — 그라데이션 + 수치 표시
+  bar.style.background = 'linear-gradient(90deg, var(--teal) 0%, var(--amber) 50%, var(--red) 100%)';
+  bar.style.clipPath = `inset(0 ${100 - Math.round(score)}% 0 0)`;
+  bar.style.width = '100%';
+  if (score >= 70) { document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 충돌 가능성 높음`; }
+  else if (score >= 40) { document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 경계 구간`; }
+  else { document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 안정 구간`; }
 
   // 경보
   const vix = parseFloat(document.getElementById('vix-value').textContent)||NaN;
@@ -841,8 +847,15 @@ function recalc() {
   if (paradox) warns.push('⚠ 수출호조 + 원화약세 역설 (외부개입 의심)');
   if (foreignExitNotGeo) warns.push('외국인 매도 = 차익실현 가능 (재진입 추적 필요)');
 
-  if (warns.length === 0) { bar2.className='alert-bar alert-ok'; bar2.textContent='✓ 안정 구간 — 정기 모니터링'; }
-  else if (warns.length >= 2) { bar2.className='alert-bar alert-danger'; bar2.textContent='🚨 복합 경보: '+warns.join(' · '); }
+  if (warns.length === 0) {
+    // 안정 구간에도 주요 수치 요약 표시 (초안 방식)
+    const snippets = [];
+    if (!isNaN(krw2)) snippets.push(`원/달러 ${Math.round(krw2).toLocaleString('ko-KR')}원`);
+    if (!isNaN(vix)) snippets.push(`VIX ${vix.toFixed(1)}`);
+    if (!isNaN(wti)) snippets.push(`WTI $${wti.toFixed(1)}`);
+    bar2.className='alert-bar alert-ok';
+    bar2.textContent = '✓ 안정 구간' + (snippets.length ? ' — ' + snippets.join(' · ') : ' — 정기 모니터링');
+  } else if (warns.length >= 2) { bar2.className='alert-bar alert-danger'; bar2.textContent='🚨 복합 경보: '+warns.join(' · '); }
   else { bar2.className='alert-bar alert-warn'; bar2.textContent='⚡ 경계: '+warns.join(' · '); }
 }
 
@@ -1085,7 +1098,20 @@ ${newsBlock}
 
 7. 【권고 사항】
    - 모니터링 우선순위
-   - 다음 업데이트 시 확인할 핵심 지표`;
+   - 다음 업데이트 시 확인할 핵심 지표
+
+8. 【블로그 SEO 메타데이터】
+   아래 형식으로 블로그 게재용 정보를 작성해 주세요.
+
+   ■ SEO 제목 (30자 이내, 핵심 키워드 포함, 클릭 유도):
+   예) [날짜] 한반도 정세 긴급 분석 — [핵심 이슈 1~2개]
+
+   ■ 부제목 (50자 이내, 제목을 보완하는 요약):
+   예) 임계점 지수 XX · [주요 리스크] · [주목할 시나리오]
+
+   ■ 해시태그 5개 (SNS 확산 + 검색 최적화, 한국어 위주):
+   #한반도정세 등 관련 키워드 5개`;
+
 
   document.getElementById('prompt-output').textContent = prompt;
   document.getElementById('prompt-output-wrap').classList.add('visible');
