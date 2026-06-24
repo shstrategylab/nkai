@@ -805,7 +805,6 @@ function applyManual() {
     document.getElementById('wti-status').textContent = '수동 입력값 (선물가 CL=F 기준)';
     document.getElementById('wti-badge').className = 'badge badge-neutral';
     document.getElementById('wti-badge').textContent = '수동';
-    document.getElementById('wti-src').textContent = '수동(선물가)';
     dot('wti', 'ok');
   }
   if(!isNaN(csi)) setCSI(csi);
