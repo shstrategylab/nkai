@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NK-AI 정세 현황판</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #1a1a1a;
+    --bg3: #222222;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8e8e8;
+    --text2: #999;
+    --text3: #666;
+    --red: #e05555;
+    --amber: #d4922a;
+    --teal: #2aaa80;
+    --blue: #4a8fd4;
+    --red-bg: rgba(224,85,85,0.12);
+    --amber-bg: rgba(212,146,42,0.12);
+    --teal-bg: rgba(42,170,128,0.12);
+    --blue-bg: rgba(74,143,212,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; min-height: 100vh; padding: 24px 16px; }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* 헤더 */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 0.5px solid var(--border2); }
+  .header-title { font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .header-right { text-align: right; }
+  .refresh-btn { background: none; border: 0.5px solid var(--border2); color: var(--text2); font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+  .refresh-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* 경보 바 */
+  .alert-bar { border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .alert-warn { background: var(--amber-bg); border: 0.5px solid var(--amber); color: #e8c07a; }
+  .alert-ok { background: var(--teal-bg); border: 0.5px solid var(--teal); color: #7adfc0; }
+  .alert-danger { background: var(--red-bg); border: 0.5px solid var(--red); color: #f0a0a0; }
+
+  /* 축 섹션 */
+  .axis-section { margin-bottom: 24px; }
+  .axis-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .axis-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red { background: var(--red); }
+  .dot-amber { background: var(--amber); }
+  .dot-teal { background: var(--teal); }
+  .axis-title { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+
+  /* 카드 그리드 */
+  .grid { display: grid; gap: 10px; }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  .mcard { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; position: relative; }
+  .mcard-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .mcard-value { font-size: 24px; font-weight: 500; color: var(--text); line-height: 1.1; }
+  .mcard-value.loading { color: var(--text3); font-size: 16px; }
+  .mcard-sub { font-size: 11px; color: var(--text2); margin-top: 5px; display: flex; align-items: center; gap: 6px; }
+  .mcard-link { font-size: 10px; color: var(--text3); text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; gap: 3px; border-top: 0.5px solid var(--border); padding-top: 8px; width: 100%; }
+  .mcard-link:hover { color: var(--teal); }
+
+  /* 뱃지 */
+  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; }
+  .badge-danger { background: var(--red-bg); color: var(--red); border: 0.5px solid var(--red); }
+  .badge-warn { background: var(--amber-bg); color: #d4b46a; border: 0.5px solid var(--amber); }
+  .badge-ok { background: var(--teal-bg); color: var(--teal); border: 0.5px solid var(--teal); }
+  .badge-info { background: var(--blue-bg); color: var(--blue); border: 0.5px solid var(--blue); }
+  .badge-neutral { background: var(--bg3); color: var(--text3); border: 0.5px solid var(--border2); }
+
+  /* 번외 플래그 */
+  .flag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .flag-pill { font-size: 10px; padding: 3px 10px; border-radius: 99px; border: 0.5px dashed var(--border2); color: var(--text3); }
+
+  /* 바 지표 */
+  .bar-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .bar-label { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+  .bar-wrap { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .bar-note { font-size: 11px; color: var(--text2); }
+  .bar-link { font-size: 10px; color: var(--text3); text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; gap: 3px; }
+  .bar-link:hover { color: var(--teal); }
+
+  /* 수동 입력 섹션 */
+  .manual-section { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  .manual-title { font-size: 12px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .manual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .manual-item { display: flex; flex-direction: column; gap: 5px; }
+  .manual-item label { font-size: 11px; color: var(--text3); }
+  .manual-item input, .manual-item select { background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text); border-radius: 6px; padding: 7px 10px; font-size: 13px; width: 100%; }
+  .manual-item input:focus, .manual-item select:focus { outline: none; border-color: var(--teal); }
+  .manual-item a { font-size: 10px; color: var(--text3); text-decoration: none; }
+  .manual-item a:hover { color: var(--teal); }
+  .apply-btn { margin-top: 12px; background: none; border: 0.5px solid var(--teal); color: var(--teal); padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+  .apply-btn:hover { background: var(--teal-bg); }
+
+  /* 임계점 종합 */
+  .threshold-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 16px; margin-top: 10px; }
+  .threshold-bar-wrap { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; margin: 10px 0 6px; }
+  .threshold-bar-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
+  .threshold-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); }
+
+  /* 구분선 */
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0; }
+
+  /* 푸터 */
+  .footer { margin-top: 24px; padding-top: 16px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text3); line-height: 1.7; }
+  .last-updated { font-size: 11px; color: var(--text3); margin-top: 6px; }
+
+  svg.icon { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div>
+      <div class="header-title">NK-AI 정세 현황판</div>
+      <div class="header-sub" id="today-date">로딩 중...</div>
+    </div>
+    <div class="header-right">
+      <button class="refresh-btn" onclick="loadAllData()">↻ 데이터 새로고침</button>
+      <div class="last-updated" id="last-updated"></div>
+    </div>
+  </div>
+
+  <!-- 경보 바 -->
+  <div class="alert-bar alert-warn" id="alert-bar">
+    ⚡ 데이터 로딩 중 — 잠시 기다려 주세요
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 천수축 -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="axis-section">
+    <div class="axis-header">
+      <div class="axis-dot dot-red"></div>
+      <div class="axis-title">천수축 (天數) — 주기·긴장 지표</div>
+    </div>
+
+    <div class="grid grid-4">
+
+      <!-- 환율 (자동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-ok" style="font-size:9px;">자동</span>
+          원/달러 환율
+        </div>
+        <div class="mcard-value loading" id="krw-value">로딩 중...</div>
+        <div class="mcard-sub" id="krw-status">—</div>
+        <a class="mcard-link" href="https://finance.naver.com/marketindex/" target="_blank">
+          ↗ 네이버 금융 실시간 확인
+        </a>
+      </div>
+
+      <!-- VIX (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          VIX 공포지수
+        </div>
+        <div class="mcard-value" id="vix-value">—</div>
+        <div class="mcard-sub" id="vix-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank">
+          ↗ Yahoo Finance VIX 확인
+        </a>
+      </div>
+
+      <!-- 태양흑점 (자동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-ok" style="font-size:9px;">자동</span>
+          태양흑점 F10.7
+        </div>
+        <div class="mcard-value loading" id="solar-value">로딩 중...</div>
+        <div class="mcard-sub" id="solar-status">NOAA 실시간</div>
+        <a class="mcard-link" href="https://www.spaceweather.gov/products/solar-cycle-progression" target="_blank">
+          ↗ NOAA 태양활동 확인
+        </a>
+      </div>
+
+      <!-- 콘드라티에프 (고정) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-info" style="font-size:9px;">고정</span>
+          콘드라티에프 위치
+        </div>
+        <div class="mcard-value" style="font-size:16px; padding-top:4px;">하강 후반부</div>
+        <div class="mcard-sub"><span class="badge badge-warn">전환 임박</span> 50~60년 주기</div>
+        <a class="mcard-link" href="https://en.wikipedia.org/wiki/Kondratiev_wave" target="_blank">
+          ↗ 콘드라티에프 파동 설명
+        </a>
+      </div>
+
+    </div>
+
+    <!-- 번외 플래그 -->
+    <div class="flag-row">
+      <span class="flag-pill">번외 · 행성정렬 2026.08.12 예정</span>
+      <span class="flag-pill">번외 · 병오년(丙午年) 화기(火氣) 극성기</span>
+      <span class="flag-pill">번외 · 태양활동 극대기 25주기</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 지수축 -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="axis-section">
+    <div class="axis-header">
+      <div class="axis-dot dot-amber"></div>
+      <div class="axis-title">지수축 (地數) — 한반도·지정학 지표</div>
+    </div>
+
+    <div class="grid grid-4">
+
+      <!-- 국제유가 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          국제유가 WTI
+        </div>
+        <div class="mcard-value" id="wti-value">—</div>
+        <div class="mcard-sub" id="wti-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank">
+          ↗ Yahoo Finance WTI 확인
+        </a>
+      </div>
+
+      <!-- 외국인 순매수 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          외국인 순매수 (억원)
+        </div>
+        <div class="mcard-value" id="foreign-value">—</div>
+        <div class="mcard-sub" id="foreign-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://www.krx.co.kr/main/main.jsp" target="_blank">
+          ↗ KRX 외국인 동향 확인
+        </a>
+      </div>
+
+      <!-- 수출 증감률 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          수출 증감률 (전년비)
+        </div>
+        <div class="mcard-value" id="export-value">—</div>
+        <div class="mcard-sub" id="export-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://www.motie.go.kr/motie/ne/presse/press2/bbs/bbsView.do?bbs_seq_n=165605&bbs_cd_n=81" target="_blank">
+          ↗ 산업부 수출통계 확인
+        </a>
+      </div>
+
+      <!-- 지정학 리스크 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          글로벌 분쟁 강도
+        </div>
+        <div class="mcard-value" id="conflict-value">—</div>
+        <div class="mcard-sub" id="conflict-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://acleddata.com/dashboard/" target="_blank">
+          ↗ ACLED 분쟁 데이터 확인
+        </a>
+      </div>
+
+    </div>
+
+    <!-- 바 지표 -->
+    <div class="grid grid-2" style="margin-top:10px;">
+      <div class="bar-card">
+        <div class="bar-label">북한 도발 동향 (월간 누적)</div>
+        <div class="bar-wrap">
+          <div class="bar-fill" id="nk-bar" style="width:0%; background: var(--amber);"></div>
+        </div>
+        <div class="bar-note" id="nk-note">아래에서 입력 후 적용</div>
+        <a class="bar-link" href="https://www.unikorea.go.kr/unikorea/" target="_blank">↗ 통일부 동향</a>
+      </div>
+      <div class="bar-card">
+        <div class="bar-label">정상외교 접촉 빈도 (월간)</div>
+        <div class="bar-wrap">
+          <div class="bar-fill" id="diploma-bar" style="width:0%; background: var(--teal);"></div>
+        </div>
+        <div class="bar-note" id="diploma-note">아래에서 입력 후 적용</div>
+        <a class="bar-link" href="https://www.mofa.go.kr/www/main.jsp" target="_blank">↗ 외교부 일정</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 인수축 -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="axis-section">
+    <div class="axis-header">
+      <div class="axis-dot dot-teal"></div>
+      <div class="axis-title">인수축 (人數) — 언어·행동·민심 지표</div>
+    </div>
+
+    <div class="grid grid-3">
+
+      <!-- 소비자심리지수 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          소비자심리지수 CSI
+        </div>
+        <div class="mcard-value" id="csi-value">—</div>
+        <div class="mcard-sub" id="csi-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://ecos.bok.or.kr/#/Short/WEB100" target="_blank">
+          ↗ 한국은행 ECOS 확인
+        </a>
+      </div>
+
+      <!-- 발언 톤 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          주요 발언 톤 (대결 %)
+        </div>
+        <div class="mcard-value" id="tone-value">—</div>
+        <div class="mcard-sub" id="tone-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">
+          ↗ UN 공식 발언 확인
+        </a>
+      </div>
+
+      <!-- 말·행동 간극 (수동) -->
+      <div class="mcard">
+        <div class="mcard-label">
+          <span class="badge badge-neutral" style="font-size:9px;">수동</span>
+          말·행동 간극
+        </div>
+        <div class="mcard-value" id="gap-value">—</div>
+        <div class="mcard-sub" id="gap-status">아래에서 직접 입력</div>
+        <a class="mcard-link" href="https://iiss.org/publications/the-military-balance/" target="_blank">
+          ↗ IISS 군사동향 확인
+        </a>
+      </div>
+
+    </div>
+
+    <!-- 폭발 임계점 종합 -->
+    <div class="threshold-card">
+      <div class="bar-label">폭발 임계점 종합 지수 (인수축)</div>
+      <div class="threshold-bar-wrap">
+        <div class="threshold-bar-fill" id="threshold-bar" style="width:0%;"></div>
+      </div>
+      <div class="threshold-labels">
+        <span>안정 0</span>
+        <span>경계 50</span>
+        <span>임계 100</span>
+      </div>
+      <div style="font-size:11px; color:var(--text2); margin-top:8px;" id="threshold-note">인수축 값 입력 후 자동 계산됩니다</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 수동 입력 패널 -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="manual-section">
+    <div class="manual-title">
+      ✏️ 수동 입력 패널 — 오늘 수치를 직접 입력하세요
+    </div>
+    <div class="manual-grid">
+
+      <div class="manual-item">
+        <label>VIX 공포지수 <a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-vix" placeholder="예: 22.5" step="0.1">
+      </div>
+
+      <div class="manual-item">
+        <label>국제유가 WTI ($) <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-wti" placeholder="예: 74.2" step="0.1">
+      </div>
+
+      <div class="manual-item">
+        <label>외국인 순매수 (억원) <a href="https://www.krx.co.kr" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-foreign" placeholder="예: -4200">
+      </div>
+
+      <div class="manual-item">
+        <label>수출 증감률 (%) <a href="https://www.motie.go.kr" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-export" placeholder="예: 3.1" step="0.1">
+      </div>
+
+      <div class="manual-item">
+        <label>글로벌 분쟁 강도 <a href="https://acleddata.com" target="_blank">↗ 확인</a></label>
+        <select id="input-conflict">
+          <option value="">선택</option>
+          <option value="low">낮음</option>
+          <option value="mid">중간</option>
+          <option value="high">높음</option>
+          <option value="critical">매우 높음</option>
+        </select>
+      </div>
+
+      <div class="manual-item">
+        <label>북한 도발 횟수 (이달) <a href="https://www.unikorea.go.kr" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-nk" placeholder="예: 0" min="0" max="10">
+      </div>
+
+      <div class="manual-item">
+        <label>정상외교 접촉 (이달 건수) <a href="https://www.mofa.go.kr" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-diploma" placeholder="예: 3" min="0" max="20">
+      </div>
+
+      <div class="manual-item">
+        <label>소비자심리지수 CSI <a href="https://ecos.bok.or.kr" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-csi" placeholder="예: 94.2" step="0.1">
+      </div>
+
+      <div class="manual-item">
+        <label>발언 톤 — 대결 비율 (%) <a href="https://www.un.org/press/en" target="_blank">↗ 확인</a></label>
+        <input type="number" id="input-tone" placeholder="예: 62" min="0" max="100">
+      </div>
+
+      <div class="manual-item">
+        <label>말·행동 간극</label>
+        <select id="input-gap">
+          <option value="">선택</option>
+          <option value="low">낮음 (일치)</option>
+          <option value="mid">중간 (부분 불일치)</option>
+          <option value="high">높음 (심각한 불일치)</option>
+        </select>
+      </div>
+
+    </div>
+    <button class="apply-btn" onclick="applyManual()">▶ 대시보드에 적용</button>
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer">
+    본 현황판은 상수학적 프레임과 현대 데이터 지표를 결합한 개인 분석 도구입니다.<br>
+    자동 연동: 원/달러 환율 (api.exchangerate.fun), 태양흑점 F10.7 (NOAA SWPC)<br>
+    수동 입력: VIX, WTI, KRX, 수출통계, ACLED, 통일부, 외교부, 한국은행 ECOS<br>
+    모든 판단과 결정은 사용자 본인의 책임 하에 이루어져야 합니다.
+  </div>
+
+</div>
+
+<script>
+  // ── 날짜 표시
+  function setDate() {
+    const d = new Date();
+    const days = ['일','월','화','수','목','금','토'];
+    const str = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]}) · 병오년(丙午年)`;
+    document.getElementById('today-date').textContent = str;
+  }
+
+  // ── 환율 자동 로드
+  async function loadExchangeRate() {
+    try {
+      const res = await fetch('https://api.exchangerate.fun/latest?base=USD');
+      const data = await res.json();
+      const krw = data.rates.KRW;
+      if (!krw) throw new Error('no KRW');
+      const el = document.getElementById('krw-value');
+      el.textContent = krw.toLocaleString('ko-KR', {maximumFractionDigits: 0}) + '원';
+      el.classList.remove('loading');
+      const status = document.getElementById('krw-status');
+      if (krw >= 1400) {
+        status.innerHTML = '<span class="badge badge-danger">고위험</span> 기준 1400원 초과';
+      } else if (krw >= 1300) {
+        status.innerHTML = '<span class="badge badge-warn">경계</span> 1300원대 약세';
+      } else {
+        status.innerHTML = '<span class="badge badge-ok">안정</span> 1300원 미만';
+      }
+      return krw;
+    } catch(e) {
+      document.getElementById('krw-value').textContent = '로드 실패';
+      document.getElementById('krw-status').innerHTML = '<a href="https://finance.naver.com/marketindex/" target="_blank" style="color:var(--teal);">↗ 직접 확인</a>';
+      return null;
+    }
+  }
+
+  // ── 태양흑점 자동 로드 (NOAA 45일 예보 텍스트 파싱)
+  async function loadSolarFlux() {
+    try {
+      const res = await fetch('https://services.swpc.noaa.gov/json/solar-cycle/predicted-solar-cycle.json');
+      const data = await res.json();
+      // 가장 최근 예측값 사용
+      const latest = data[data.length - 1];
+      const f107 = latest ? Math.round(latest['predicted_f10.7'] || latest['smoothed_f10.7'] || 150) : 150;
+      const el = document.getElementById('solar-value');
+      el.textContent = f107;
+      el.classList.remove('loading');
+      const status = document.getElementById('solar-status');
+      if (f107 >= 200) {
+        status.innerHTML = '<span class="badge badge-danger">극대 강</span> NOAA 예측';
+      } else if (f107 >= 150) {
+        status.innerHTML = '<span class="badge badge-warn">극대기</span> NOAA 예측';
+      } else {
+        status.innerHTML = '<span class="badge badge-ok">보통</span> NOAA 예측';
+      }
+      return f107;
+    } catch(e) {
+      // 폴백: 현재 태양활동 25주기 극대기 기준값
+      document.getElementById('solar-value').textContent = '~180';
+      document.getElementById('solar-value').classList.remove('loading');
+      document.getElementById('solar-status').innerHTML = '<span class="badge badge-warn">극대기 추정</span> <a href="https://www.spaceweather.gov" target="_blank" style="color:var(--teal); font-size:10px;">↗ 직접 확인</a>';
+      return 180;
+    }
+  }
+
+  // ── 수동 입력 적용
+  function applyManual() {
+    const vix = parseFloat(document.getElementById('input-vix').value);
+    const wti = parseFloat(document.getElementById('input-wti').value);
+    const foreign = parseFloat(document.getElementById('input-foreign').value);
+    const exportRate = parseFloat(document.getElementById('input-export').value);
+    const conflict = document.getElementById('input-conflict').value;
+    const nk = parseInt(document.getElementById('input-nk').value) || 0;
+    const diploma = parseInt(document.getElementById('input-diploma').value) || 0;
+    const csi = parseFloat(document.getElementById('input-csi').value);
+    const tone = parseFloat(document.getElementById('input-tone').value);
+    const gap = document.getElementById('input-gap').value;
+
+    // VIX
+    if (!isNaN(vix)) {
+      document.getElementById('vix-value').textContent = vix.toFixed(1);
+      let badge = vix >= 30 ? 'badge-danger' : vix >= 20 ? 'badge-warn' : 'badge-ok';
+      let label = vix >= 30 ? '공포' : vix >= 20 ? '경계' : '안정';
+      document.getElementById('vix-status').innerHTML = `<span class="badge ${badge}">${label}</span> 기준 20`;
+    }
+
+    // WTI
+    if (!isNaN(wti)) {
+      document.getElementById('wti-value').textContent = '$' + wti.toFixed(1);
+      let badge = wti >= 90 ? 'badge-danger' : wti >= 75 ? 'badge-warn' : 'badge-ok';
+      let label = wti >= 90 ? '고유가' : wti >= 75 ? '경계' : '안정';
+      document.getElementById('wti-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 외국인 순매수
+    if (!isNaN(foreign)) {
+      document.getElementById('foreign-value').textContent = (foreign >= 0 ? '+' : '') + foreign.toLocaleString() + '억';
+      let badge = foreign < -5000 ? 'badge-danger' : foreign < 0 ? 'badge-warn' : 'badge-ok';
+      let label = foreign < -5000 ? '대규모 이탈' : foreign < 0 ? '순매도' : '순매수';
+      document.getElementById('foreign-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 수출
+    if (!isNaN(exportRate)) {
+      document.getElementById('export-value').textContent = (exportRate >= 0 ? '+' : '') + exportRate.toFixed(1) + '%';
+      let badge = exportRate >= 5 ? 'badge-ok' : exportRate >= 0 ? 'badge-info' : 'badge-warn';
+      let label = exportRate >= 5 ? '호조' : exportRate >= 0 ? '소폭 증가' : '감소';
+      document.getElementById('export-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 분쟁 강도
+    if (conflict) {
+      const conflictMap = { low: ['낮음', 'badge-ok', 20], mid: ['중간', 'badge-warn', 50], high: ['높음', 'badge-danger', 80], critical: ['매우 높음', 'badge-danger', 100] };
+      const [label, badge] = conflictMap[conflict];
+      document.getElementById('conflict-value').textContent = label;
+      document.getElementById('conflict-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 북한 도발
+    const nkPct = Math.min(nk * 15, 100);
+    document.getElementById('nk-bar').style.width = nkPct + '%';
+    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk === 0 ? '저강도' : nk <= 2 ? '주의' : '고강도'}`;
+
+    // 외교 접촉
+    const dipPct = Math.min(diploma * 12, 100);
+    document.getElementById('diploma-bar').style.width = dipPct + '%';
+    document.getElementById('diploma-note').textContent = `이달 ${diploma}건 · ${diploma >= 5 ? '활발' : diploma >= 2 ? '보통' : '저조'}`;
+
+    // CSI
+    if (!isNaN(csi)) {
+      document.getElementById('csi-value').textContent = csi.toFixed(1);
+      let badge = csi >= 100 ? 'badge-ok' : csi >= 90 ? 'badge-warn' : 'badge-danger';
+      let label = csi >= 100 ? '긍정' : csi >= 90 ? '위축' : '심각 위축';
+      document.getElementById('csi-status').innerHTML = `<span class="badge ${badge}">${label}</span> 기준 100`;
+    }
+
+    // 발언 톤
+    if (!isNaN(tone)) {
+      document.getElementById('tone-value').textContent = '대결 ' + Math.round(tone) + '%';
+      let badge = tone >= 70 ? 'badge-danger' : tone >= 50 ? 'badge-warn' : 'badge-ok';
+      let label = tone >= 70 ? '고강도 긴장' : tone >= 50 ? '긴장' : '협력 우세';
+      document.getElementById('tone-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 말·행동 간극
+    if (gap) {
+      const gapMap = { low: ['낮음 (일치)', 'badge-ok'], mid: ['중간', 'badge-warn'], high: ['높음 (불일치)', 'badge-danger'] };
+      const [label, badge] = gapMap[gap];
+      document.getElementById('gap-value').textContent = label;
+      document.getElementById('gap-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+    }
+
+    // 폭발 임계점 계산
+    calculateThreshold(tone, gap, csi, nk, diploma);
+
+    // 경보 바 업데이트
+    updateAlertBar(vix, wti, conflict, nk);
+
+    // 저장
+    saveToLocal();
+  }
+
+  function calculateThreshold(tone, gap, csi, nk, diploma) {
+    let score = 0;
+    let count = 0;
+    if (!isNaN(tone)) { score += tone; count++; }
+    const gapScore = { low: 20, mid: 50, high: 90 };
+    if (gap && gapScore[gap]) { score += gapScore[gap]; count++; }
+    if (!isNaN(csi)) { score += Math.max(0, 100 - csi); count++; }
+    score += nk * 10;
+    score -= diploma * 5;
+    if (count > 0) score = score / Math.max(count, 1);
+    score = Math.max(0, Math.min(100, score));
+
+    const bar = document.getElementById('threshold-bar');
+    bar.style.width = Math.round(score) + '%';
+    if (score >= 70) {
+      bar.style.background = 'var(--red)';
+      document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 충돌 가능성 높음, 분석 강력 권고`;
+    } else if (score >= 40) {
+      bar.style.background = 'var(--amber)';
+      document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 경계 구간, 모니터링 필요`;
+    } else {
+      bar.style.background = 'var(--teal)';
+      document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 안정 구간`;
+    }
+  }
+
+  function updateAlertBar(vix, wti, conflict, nk) {
+    const bar = document.getElementById('alert-bar');
+    const warnings = [];
+    if (!isNaN(vix) && vix >= 30) warnings.push(`VIX ${vix.toFixed(1)} (공포구간)`);
+    if (!isNaN(wti) && wti >= 90) warnings.push(`WTI $${wti.toFixed(1)} (고유가)`);
+    if (conflict === 'high' || conflict === 'critical') warnings.push('글로벌 분쟁 고강도');
+    if (nk >= 3) warnings.push(`북한 도발 ${nk}건`);
+
+    if (warnings.length === 0) {
+      bar.className = 'alert-bar alert-ok';
+      bar.textContent = '✓ 현재 지표 안정 구간 — 정기 모니터링 유지';
+    } else if (warnings.length >= 2) {
+      bar.className = 'alert-bar alert-danger';
+      bar.textContent = '🚨 복합 경보: ' + warnings.join(' · ') + ' — 즉시 분석 권고';
+    } else {
+      bar.className = 'alert-bar alert-warn';
+      bar.textContent = '⚡ 경계 신호: ' + warnings.join(' · ') + ' — 분석 트리거 권고';
+    }
+  }
+
+  // ── 로컬스토리지 저장/복원
+  function saveToLocal() {
+    const fields = ['input-vix','input-wti','input-foreign','input-export','input-conflict','input-nk','input-diploma','input-csi','input-tone','input-gap'];
+    const data = {};
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data[id] = el.value;
+    });
+    localStorage.setItem('nkai-manual', JSON.stringify(data));
+  }
+
+  function restoreFromLocal() {
+    try {
+      const data = JSON.parse(localStorage.getItem('nkai-manual'));
+      if (!data) return;
+      Object.entries(data).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+      });
+      applyManual();
+    } catch(e) {}
+  }
+
+  // ── 전체 로드
+  async function loadAllData() {
+    document.getElementById('last-updated').textContent = '새로고침 중...';
+    await Promise.all([loadExchangeRate(), loadSolarFlux()]);
+    const now = new Date();
+    document.getElementById('last-updated').textContent = `최종 갱신 ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  }
+
+  // ── 초기화
+  setDate();
+  loadAllData();
+  restoreFromLocal();
+</script>
+</body>
+</html>
