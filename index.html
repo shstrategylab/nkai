@@ -118,6 +118,28 @@
 
   .divider { border:none; border-top:0.5px solid var(--border); margin:20px 0; }
   .footer { margin-top:24px; padding-top:16px; border-top:0.5px solid var(--border); font-size:11px; color:var(--text3); line-height:1.8; }
+
+  /* 프롬프트 생성기 */
+  .prompt-section { background:var(--bg2); border:0.5px solid rgba(212,146,42,0.4); border-radius:8px; padding:16px; margin-bottom:20px; }
+  .prompt-title { font-size:12px; color:#d4922a; margin-bottom:0; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .prompt-title:hover { color:#e8c07a; }
+  .prompt-body { display:none; margin-top:14px; }
+  .prompt-body.open { display:block; }
+  .prompt-news-label { font-size:11px; color:var(--text3); margin-bottom:6px; }
+  .prompt-news-textarea { width:100%; background:var(--bg3); border:0.5px solid var(--border2); color:var(--text); border-radius:6px; padding:10px 12px; font-size:12px; line-height:1.6; resize:vertical; min-height:90px; font-family:inherit; }
+  .prompt-news-textarea:focus { outline:none; border-color:var(--amber); }
+  .prompt-news-textarea::placeholder { color:var(--text3); }
+  .prompt-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .prompt-gen-btn { background:none; border:0.5px solid var(--amber); color:#d4922a; padding:8px 16px; border-radius:6px; font-size:12px; cursor:pointer; }
+  .prompt-gen-btn:hover { background:var(--amber-bg); }
+  .prompt-copy-btn { background:none; border:0.5px solid var(--border2); color:var(--text3); padding:8px 16px; border-radius:6px; font-size:12px; cursor:pointer; }
+  .prompt-copy-btn:hover { border-color:var(--teal); color:var(--teal); }
+  .prompt-copy-btn.copied { border-color:var(--teal); color:var(--teal); }
+  .prompt-output-wrap { margin-top:14px; display:none; }
+  .prompt-output-wrap.visible { display:block; }
+  .prompt-output-label { font-size:11px; color:var(--text3); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .prompt-output { background:var(--bg3); border:0.5px solid var(--border2); border-radius:6px; padding:12px 14px; font-size:11px; color:var(--text2); line-height:1.7; white-space:pre-wrap; max-height:340px; overflow-y:auto; font-family:'Courier New',monospace; }
+  .prompt-tip { font-size:10px; color:var(--text3); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -487,6 +509,37 @@
     </div>
   </div>
 
+  <!-- 프롬프트 생성기 -->
+  <div class="prompt-section">
+    <div class="prompt-title" onclick="togglePrompt()">
+      📋 Claude 분석 프롬프트 생성기
+      <span style="font-size:10px;color:var(--text3);margin-left:6px;">현황판 데이터 → 분석 요청 템플릿</span>
+      <span id="prompt-toggle" style="margin-left:auto;font-size:10px;color:var(--text3);">▼ 펼치기</span>
+    </div>
+    <div class="prompt-body" id="prompt-body">
+
+      <div style="margin-bottom:14px;">
+        <div class="prompt-news-label">📰 오늘의 주요 뉴스 입력 <span style="color:var(--text3);font-size:10px;">(선택 · 2~5개 권장)</span></div>
+        <textarea class="prompt-news-textarea" id="prompt-news-input"
+          placeholder="예시&#10;- 북한, 동해상 단거리 미사일 2발 발사 (6월 25일)&#10;- 미국 국무장관, 한국 방문 예정 발표&#10;- 한미 연합훈련 규모 확대 논의 중&#10;- 국내 소비자물가 3개월 연속 상승"></textarea>
+      </div>
+
+      <div class="prompt-actions">
+        <button class="prompt-gen-btn" onclick="generatePrompt()">⚡ 프롬프트 생성</button>
+        <button class="prompt-copy-btn" id="prompt-copy-btn" onclick="copyPrompt()" style="display:none;">📋 복사하기</button>
+      </div>
+
+      <div class="prompt-output-wrap" id="prompt-output-wrap">
+        <div class="prompt-output-label">
+          ✅ 생성된 프롬프트 — Claude AI에 그대로 붙여넣기
+          <span style="margin-left:auto;font-size:10px;color:var(--text3);" id="prompt-gen-time"></span>
+        </div>
+        <div class="prompt-output" id="prompt-output"></div>
+        <div class="prompt-tip">💡 claude.ai 채팅창에 붙여넣기 → 전송하면 분석 리포트로 출력됩니다</div>
+      </div>
+
+    </div>
+  </div>
 
   <div class="footer">
     본 현황판은 상수학적 프레임과 현대 데이터 지표를 결합한 개인 분석 도구입니다.<br>
@@ -863,6 +916,157 @@ async function loadAllData() {
   const now=new Date();
   document.getElementById('last-updated').textContent=
     `최종 갱신 ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// ══════════════════════════════════════════
+// 프롬프트 생성기
+// ══════════════════════════════════════════
+function togglePrompt() {
+  const body = document.getElementById('prompt-body');
+  const tog = document.getElementById('prompt-toggle');
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? '▲ 접기' : '▼ 펼치기';
+}
+
+function getDisplayValue(id, fallback='—') {
+  const el = document.getElementById(id);
+  return el ? (el.textContent.trim() || fallback) : fallback;
+}
+
+function generatePrompt() {
+  // 현황판에서 현재 표시값 수집
+  const today = document.getElementById('today-date')?.textContent || new Date().toLocaleDateString('ko-KR');
+
+  // 천수축
+  const krw      = getDisplayValue('krw-value');
+  const vix      = getDisplayValue('vix-value');
+  const solar    = getDisplayValue('solar-value');
+
+  // 지수축
+  const wti      = getDisplayValue('wti-value');
+  const foreign  = getDisplayValue('foreign-value');
+  const exportV  = getDisplayValue('export-value');
+  const conflict = getDisplayValue('conflict-value');
+  const nkNote   = getDisplayValue('nk-note');
+  const dipNote  = getDisplayValue('diploma-note');
+
+  // 인수축
+  const csi      = getDisplayValue('csi-value');
+  const toneUN   = getDisplayValue('tone-value');
+  const toneDom  = getDisplayValue('tone-dom-value');
+  const gapNK    = getDisplayValue('gap-value');
+  const gapDom   = getDisplayValue('gap-dom-value');
+
+  // 임계점
+  const threshold = getDisplayValue('threshold-note');
+
+  // 경보
+  const alert = document.getElementById('alert-bar')?.textContent?.trim() || '—';
+
+  // 뉴스 입력
+  const news = document.getElementById('prompt-news-input')?.value?.trim() || '';
+  const newsBlock = news
+    ? `\n【오늘의 주요 뉴스】\n${news}\n`
+    : '';
+
+  const prompt = `당신은 한반도 정세 및 지정학 전문 분석가입니다.
+아래 NK-AI 정세 현황판의 실시간 데이터와 뉴스를 바탕으로, 천지인(天地人) 3축 프레임에 따른 종합 분석 리포트를 작성해 주세요.
+
+═══════════════════════════════════════
+📊 NK-AI 정세 현황판 데이터 (${today})
+═══════════════════════════════════════
+
+【천수축(天數) — 주기·긴장 지표】
+  원/달러 환율   : ${krw}
+  VIX 공포지수   : ${vix}
+  태양흑점 F10.7 : ${solar}
+  콘드라티에프   : 하강 후반부 (전환 임박, 50~60년 주기)
+  번외 플래그    : 행성정렬 2026.08.12 예정 / 병오년 화기 극성기 / 태양활동 극대기 25주기
+
+【지수축(地數) — 한반도·지정학 지표】
+  국제유가 WTI   : ${wti}
+  외국인 순매수  : ${foreign}
+  수출 증감률    : ${exportV}
+  글로벌 분쟁강도: ${conflict}
+  북한 도발 동향 : ${nkNote}
+  정상외교 접촉  : ${dipNote}
+
+【인수축(人數) — 언어·행동·민심 지표】
+  소비자심리 CSI : ${csi}
+  발언 톤(UN·북미): ${toneUN}
+  발언 톤(국내정치): ${toneDom}
+  말·행동 간극(북·국제): ${gapNK}
+  말·행동 간극(국내정치): ${gapDom}
+
+【종합 임계점 지수】
+  ${threshold}
+
+【경보 상태】
+  ${alert}
+${newsBlock}
+═══════════════════════════════════════
+📋 분석 요청 사항
+═══════════════════════════════════════
+
+아래 형식으로 분석 리포트를 작성해 주세요.
+
+1. 【핵심 요약】(3줄 이내)
+   - 현재 정세를 한 문장으로 압축
+
+2. 【천수축 분석】
+   - 환율·VIX·태양활동의 주기적 의미
+   - 콘드라티에프 위치와 현재 긴장의 상관성
+
+3. 【지수축 분석】
+   - 북한 도발 동향과 외교 접촉 균형 평가
+   - 글로벌 분쟁 강도가 한반도에 미치는 영향
+   - 유가·외국인 자금 흐름의 지정학적 함의
+
+4. 【인수축 분석】
+   - 발언 톤 대결 % 수준의 의미 해석
+   - 말·행동 간극이 시사하는 실제 의도
+   - 민심(CSI) 지표와 정세 불안의 연관성
+
+5. 【임계점 종합 평가】
+   - 현재 지수가 시사하는 위험 수준
+   - 가장 주의해야 할 트리거 요인 2~3가지
+
+6. 【향후 1~4주 시나리오】
+   - 안정 시나리오 (확률 추정 포함)
+   - 경계 시나리오
+   - 충돌 시나리오
+
+7. 【권고 사항】
+   - 모니터링 우선순위
+   - 다음 업데이트 시 확인할 핵심 지표`;
+
+  document.getElementById('prompt-output').textContent = prompt;
+  document.getElementById('prompt-output-wrap').classList.add('visible');
+  document.getElementById('prompt-copy-btn').style.display = 'inline-block';
+  document.getElementById('prompt-gen-time').textContent =
+    new Date().toLocaleTimeString('ko-KR');
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('prompt-copy-btn');
+    btn.textContent = '✅ 복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 복사하기'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('prompt-copy-btn');
+    btn.textContent = '✅ 복사됨!';
+    setTimeout(() => { btn.textContent = '📋 복사하기'; }, 2000);
+  });
 }
 
 // 초기화
