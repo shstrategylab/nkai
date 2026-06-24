@@ -536,24 +536,34 @@ function updateWebhookChip(url) {
 async function callWebhook() {
   const url = localStorage.getItem('nkai-webhook');
   if (!url) { alert('웹훅 URL을 먼저 저장하세요.'); return; }
-  try {
-    const res = await fetch(url, { method: 'GET' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    applyWebhookData(data);
-  } catch(e) {
-    // Make.com은 GET 응답이 아닌 경우도 있음 - POST 시도
+
+  async function safeFetch(fetchPromise) {
+    const res = await fetchPromise;
+    const text = await res.text();
+    // Make.com은 "Accepted", HTML 등 비-JSON을 반환하는 경우가 있음
     try {
-      const res2 = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'fetch' })
-      });
-      const data2 = await res2.json();
-      applyWebhookData(data2);
-    } catch(e2) {
-      console.warn('Webhook call failed:', e2);
+      return JSON.parse(text);
+    } catch(e) {
+      console.warn('Webhook non-JSON response:', text.substring(0, 100));
+      return null;
     }
+  }
+
+  try {
+    const data = await safeFetch(fetch(url, { method: 'GET' }));
+    if (data) { applyWebhookData(data); return; }
+  } catch(e) { /* GET 실패 → POST 시도 */ }
+
+  try {
+    const data2 = await safeFetch(fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'fetch' })
+    }));
+    if (data2) { applyWebhookData(data2); return; }
+    console.warn('Webhook call failed: 유효한 JSON 응답 없음 (Make.com 시나리오 응답 설정 확인)');
+  } catch(e2) {
+    console.warn('Webhook call failed:', e2);
   }
 }
 
@@ -770,7 +780,7 @@ function applyAIResult(r) {
 // 임계점 계산 & 경보
 // ══════════════════════════════════════════
 function recalc() {
-  const tone = parseFloat(document.getElementById('tone-value').textContent.replace('대결 ','').replace('%',''));
+  const tone = parseFloat((document.getElementById('tone-value').textContent||'').replace('대결 ','').replace('%','').trim());
   const gapTxt = document.getElementById('gap-value').textContent;
   const gap = gapTxt.includes('불일치') ? 'high' : gapTxt.includes('중간') ? 'mid' : gapTxt.includes('일치') ? 'low' : '';
   const csiTxt = document.getElementById('csi-value').textContent;
@@ -785,10 +795,11 @@ function recalc() {
   const gapS = {low:20,mid:50,high:90};
   if (gap && gapS[gap]) { score += gapS[gap]; count++; }
   if (!isNaN(csi)) { score += Math.max(0, 100-csi); count++; }
-  score += nk * 10;
-  score -= diploma * 5;
-  if (count > 0) score /= Math.max(count, 1);
-  score = Math.max(0, Math.min(100, score));
+
+  // nk·diploma는 평균 계산 후 보정값으로 가산 (count 나눗셈에 포함하지 않음)
+  const base = count > 0 ? score / count : 0;
+  const adj = Math.max(0, nk * 10 - diploma * 5);
+  score = Math.max(0, Math.min(100, base + adj));
 
   const bar = document.getElementById('threshold-bar');
   bar.style.width = Math.round(score) + '%';
@@ -885,11 +896,10 @@ async function loadAllData() {
     `최종 갱신 ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
-// 초기화
+// 초기화 — loadAllData 완료 후 restoreFromLocal 실행 (순서 보장)
 setDate();
 loadWebhookURL();
-loadAllData();
-restoreFromLocal();
+loadAllData().then(() => restoreFromLocal());
 </script>
 </body>
 </html>
