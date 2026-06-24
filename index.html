@@ -6,124 +6,128 @@
 <title>NK-AI 정세 현황판</title>
 <style>
   :root {
-    --bg: #0f0f0f;
-    --bg2: #1a1a1a;
-    --bg3: #222222;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.15);
-    --text: #e8e8e8;
-    --text2: #999;
-    --text3: #666;
-    --red: #e05555;
-    --amber: #d4922a;
-    --teal: #2aaa80;
-    --blue: #4a8fd4;
-    --red-bg: rgba(224,85,85,0.12);
-    --amber-bg: rgba(212,146,42,0.12);
-    --teal-bg: rgba(42,170,128,0.12);
-    --blue-bg: rgba(74,143,212,0.12);
+    --bg: #0f0f0f; --bg2: #1a1a1a; --bg3: #222222;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+    --text: #e8e8e8; --text2: #999; --text3: #666;
+    --red: #e05555; --amber: #d4922a; --teal: #2aaa80; --blue: #4a8fd4;
+    --red-bg: rgba(224,85,85,0.12); --amber-bg: rgba(212,146,42,0.12);
+    --teal-bg: rgba(42,170,128,0.12); --blue-bg: rgba(74,143,212,0.12);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; min-height: 100vh; padding: 24px 16px; }
-  .container { max-width: 960px; margin: 0 auto; }
+  body { background: var(--bg); color: var(--text); font-family: 'Pretendard','Apple SD Gothic Neo',sans-serif; min-height:100vh; padding:24px 16px; }
+  .container { max-width:960px; margin:0 auto; }
 
-  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 0.5px solid var(--border2); }
-  .header-title { font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: var(--text); }
-  .header-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
-  .header-right { text-align: right; display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-  .refresh-btn { background: none; border: 0.5px solid var(--border2); color: var(--text2); font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-  .refresh-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .ai-btn { background: none; border: 0.5px solid var(--blue); color: var(--blue); font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-  .ai-btn:hover { background: var(--blue-bg); }
-  .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; padding-bottom:16px; border-bottom:0.5px solid var(--border2); }
+  .header-title { font-size:18px; font-weight:500; letter-spacing:0.06em; }
+  .header-sub { font-size:12px; color:var(--text3); margin-top:4px; }
+  .header-right { text-align:right; display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .btn { background:none; font-size:12px; padding:6px 12px; border-radius:6px; cursor:pointer; }
+  .btn-border { border:0.5px solid var(--border2); color:var(--text2); }
+  .btn-border:hover { border-color:var(--teal); color:var(--teal); }
+  .btn-ai { border:0.5px solid var(--blue); color:var(--blue); }
+  .btn-ai:hover { background:var(--blue-bg); }
+  .btn-ai:disabled { opacity:0.4; cursor:not-allowed; }
+  .last-updated { font-size:11px; color:var(--text3); }
 
-  .alert-bar { border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .alert-warn { background: var(--amber-bg); border: 0.5px solid var(--amber); color: #e8c07a; }
-  .alert-ok { background: var(--teal-bg); border: 0.5px solid var(--teal); color: #7adfc0; }
-  .alert-danger { background: var(--red-bg); border: 0.5px solid var(--red); color: #f0a0a0; }
-  .alert-info { background: var(--blue-bg); border: 0.5px solid var(--blue); color: #a0c8f0; }
+  .alert-bar { border-radius:8px; padding:10px 14px; margin-bottom:20px; font-size:13px; display:flex; align-items:center; gap:8px; }
+  .alert-warn  { background:var(--amber-bg); border:0.5px solid var(--amber); color:#e8c07a; }
+  .alert-ok    { background:var(--teal-bg);  border:0.5px solid var(--teal);  color:#7adfc0; }
+  .alert-danger{ background:var(--red-bg);   border:0.5px solid var(--red);   color:#f0a0a0; }
 
-  .axis-section { margin-bottom: 24px; }
-  .axis-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .axis-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .dot-red { background: var(--red); }
-  .dot-amber { background: var(--amber); }
-  .dot-teal { background: var(--teal); }
-  .axis-title { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
-  .axis-badge { font-size: 9px; padding: 2px 7px; border-radius: 99px; background: var(--blue-bg); color: var(--blue); border: 0.5px solid var(--blue); margin-left: 4px; }
+  .status-row { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .chip { font-size:10px; padding:3px 10px; border-radius:99px; border:0.5px solid var(--border2); color:var(--text3); display:flex; align-items:center; gap:4px; }
+  .sdot { width:5px; height:5px; border-radius:50%; background:var(--teal); }
+  .sdot.idle { background:var(--text3); }
+  .sdot.ok   { background:var(--teal); }
+  .sdot.err  { background:var(--red); }
 
-  .grid { display: grid; gap: 10px; }
-  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .axis-section { margin-bottom:24px; }
+  .axis-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .axis-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .dot-red { background:var(--red); }
+  .dot-amber { background:var(--amber); }
+  .dot-teal { background:var(--teal); }
+  .axis-title { font-size:11px; font-weight:500; letter-spacing:0.1em; color:var(--text3); text-transform:uppercase; }
+  .axis-badge { font-size:9px; padding:2px 7px; border-radius:99px; background:var(--blue-bg); color:var(--blue); border:0.5px solid var(--blue); margin-left:4px; }
 
-  .mcard { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; position: relative; }
-  .mcard-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-  .mcard-value { font-size: 24px; font-weight: 500; color: var(--text); line-height: 1.1; }
-  .mcard-value.loading { color: var(--text3); font-size: 14px; animation: pulse 1.5s ease-in-out infinite; }
-  .mcard-sub { font-size: 11px; color: var(--text2); margin-top: 5px; display: flex; align-items: center; gap: 6px; }
-  .mcard-link { font-size: 10px; color: var(--text3); text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; gap: 3px; border-top: 0.5px solid var(--border); padding-top: 8px; width: 100%; }
-  .mcard-link:hover { color: var(--teal); }
-  .mcard-src { font-size: 9px; color: var(--text3); position: absolute; top: 8px; right: 10px; }
+  .grid { display:grid; gap:10px; }
+  .grid-4 { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+  .grid-3 { grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+  .grid-2 { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+
+  .mcard { background:var(--bg2); border:0.5px solid var(--border); border-radius:8px; padding:14px 16px; position:relative; }
+  .mcard-label { font-size:11px; color:var(--text3); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .mcard-value { font-size:24px; font-weight:500; line-height:1.1; }
+  .mcard-value.loading { color:var(--text3); font-size:14px; animation:pulse 1.5s ease-in-out infinite; }
+  .mcard-sub { font-size:11px; color:var(--text2); margin-top:5px; display:flex; align-items:center; gap:6px; }
+  .mcard-link { font-size:10px; color:var(--text3); text-decoration:none; margin-top:8px; display:inline-flex; align-items:center; gap:3px; border-top:0.5px solid var(--border); padding-top:8px; width:100%; }
+  .mcard-link:hover { color:var(--teal); }
+  .mcard-src { font-size:9px; color:var(--text3); position:absolute; top:8px; right:10px; }
 
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; }
-  .badge-danger { background: var(--red-bg); color: var(--red); border: 0.5px solid var(--red); }
-  .badge-warn { background: var(--amber-bg); color: #d4b46a; border: 0.5px solid var(--amber); }
-  .badge-ok { background: var(--teal-bg); color: var(--teal); border: 0.5px solid var(--teal); }
-  .badge-info { background: var(--blue-bg); color: var(--blue); border: 0.5px solid var(--blue); }
-  .badge-neutral { background: var(--bg3); color: var(--text3); border: 0.5px solid var(--border2); }
-  .badge-auto { background: rgba(42,170,128,0.15); color: #7adfc0; border: 0.5px solid #2aaa80; }
+  .badge { display:inline-block; font-size:10px; font-weight:500; padding:2px 7px; border-radius:99px; }
+  .badge-danger  { background:var(--red-bg);   color:var(--red);   border:0.5px solid var(--red); }
+  .badge-warn    { background:var(--amber-bg); color:#d4b46a;      border:0.5px solid var(--amber); }
+  .badge-ok      { background:var(--teal-bg);  color:var(--teal);  border:0.5px solid var(--teal); }
+  .badge-info    { background:var(--blue-bg);  color:var(--blue);  border:0.5px solid var(--blue); }
+  .badge-neutral { background:var(--bg3);      color:var(--text3); border:0.5px solid var(--border2); }
+  .badge-auto    { background:rgba(42,170,128,0.15); color:#7adfc0; border:0.5px solid #2aaa80; }
 
-  .flag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .flag-pill { font-size: 10px; padding: 3px 10px; border-radius: 99px; border: 0.5px dashed var(--border2); color: var(--text3); }
+  .flag-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .flag-pill { font-size:10px; padding:3px 10px; border-radius:99px; border:0.5px dashed var(--border2); color:var(--text3); }
 
-  .bar-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 14px 16px; }
-  .bar-label { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
-  .bar-wrap { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
-  .bar-note { font-size: 11px; color: var(--text2); }
-  .bar-link { font-size: 10px; color: var(--text3); text-decoration: none; margin-top: 8px; display: inline-flex; align-items: center; gap: 3px; }
-  .bar-link:hover { color: var(--teal); }
+  .bar-card { background:var(--bg2); border:0.5px solid var(--border); border-radius:8px; padding:14px 16px; }
+  .bar-label { font-size:11px; color:var(--text3); margin-bottom:8px; }
+  .bar-wrap { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; margin-bottom:6px; }
+  .bar-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
+  .bar-note { font-size:11px; color:var(--text2); }
+  .bar-link { font-size:10px; color:var(--text3); text-decoration:none; margin-top:8px; display:inline-flex; align-items:center; gap:3px; }
+  .bar-link:hover { color:var(--teal); }
 
-  .threshold-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 16px; margin-top: 10px; }
-  .threshold-bar-wrap { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; margin: 10px 0 6px; }
-  .threshold-bar-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease; }
-  .threshold-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); }
+  .threshold-card { background:var(--bg2); border:0.5px solid var(--border); border-radius:8px; padding:16px; margin-top:10px; }
+  .threshold-bar-wrap { height:10px; background:var(--bg3); border-radius:5px; overflow:hidden; margin:10px 0 6px; }
+  .threshold-bar-fill { height:100%; border-radius:5px; transition:width 0.5s ease; }
+  .threshold-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--text3); }
 
   /* AI 분석 패널 */
-  .ai-panel { background: var(--bg2); border: 0.5px solid var(--blue); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
-  .ai-panel-title { font-size: 12px; color: var(--blue); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-  .ai-result { font-size: 12px; color: var(--text2); line-height: 1.7; white-space: pre-wrap; }
-  .ai-loading { font-size: 12px; color: var(--text3); animation: pulse 1.5s ease-in-out infinite; }
-  .ai-keywords { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-  .ai-kw { font-size: 10px; padding: 2px 8px; border-radius: 99px; background: var(--bg3); color: var(--text3); border: 0.5px dashed var(--border2); }
+  .ai-panel { background:var(--bg2); border:0.5px solid var(--blue); border-radius:8px; padding:16px; margin-bottom:20px; }
+  .ai-panel-title { font-size:12px; color:var(--blue); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .ai-result { font-size:12px; color:var(--text2); line-height:1.7; }
+  .ai-loading { font-size:12px; color:var(--text3); animation:pulse 1.5s ease-in-out infinite; }
+  .ai-keywords { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .ai-kw { font-size:10px; padding:2px 8px; border-radius:99px; background:var(--bg3); color:var(--text3); border:0.5px dashed var(--border2); }
 
-  /* 수동 입력 축소 */
-  .manual-section { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
-  .manual-title { font-size: 12px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-  .manual-title:hover { color: var(--text); }
-  .manual-body { display: none; }
-  .manual-body.open { display: block; }
-  .manual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px; }
-  .manual-item { display: flex; flex-direction: column; gap: 5px; }
-  .manual-item label { font-size: 11px; color: var(--text3); }
-  .manual-item input, .manual-item select { background: var(--bg3); border: 0.5px solid var(--border2); color: var(--text); border-radius: 6px; padding: 7px 10px; font-size: 13px; width: 100%; }
-  .manual-item input:focus, .manual-item select:focus { outline: none; border-color: var(--teal); }
-  .apply-btn { background: none; border: 0.5px solid var(--teal); color: var(--teal); padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; }
-  .apply-btn:hover { background: var(--teal-bg); }
+  /* 만약 Make.com 웹훅 안내 박스 */
+  .info-box { background:var(--bg2); border:0.5px solid var(--border2); border-radius:8px; padding:14px 16px; margin-bottom:16px; font-size:12px; color:var(--text2); line-height:1.7; }
+  .info-box a { color:var(--blue); text-decoration:none; }
+  .info-box a:hover { text-decoration:underline; }
+  .info-box .info-title { font-size:11px; color:var(--text3); letter-spacing:0.06em; margin-bottom:8px; }
 
-  /* 상태 표시줄 */
-  .status-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-  .status-chip { font-size: 10px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--border2); color: var(--text3); display: flex; align-items: center; gap: 4px; }
-  .status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); animation: blink 2s infinite; }
-  .status-dot.idle { background: var(--text3); animation: none; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  /* 수동 입력 */
+  .manual-section { background:var(--bg2); border:0.5px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px; }
+  .manual-title { font-size:12px; color:var(--text2); margin-bottom:0; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .manual-title:hover { color:var(--text); }
+  .manual-body { display:none; margin-top:14px; }
+  .manual-body.open { display:block; }
+  .manual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:12px; }
+  .manual-item { display:flex; flex-direction:column; gap:5px; }
+  .manual-item label { font-size:11px; color:var(--text3); }
+  .manual-item input,.manual-item select { background:var(--bg3); border:0.5px solid var(--border2); color:var(--text); border-radius:6px; padding:7px 10px; font-size:13px; width:100%; }
+  .manual-item input:focus,.manual-item select:focus { outline:none; border-color:var(--teal); }
+  .apply-btn { background:none; border:0.5px solid var(--teal); color:var(--teal); padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; }
+  .apply-btn:hover { background:var(--teal-bg); }
 
-  .divider { border: none; border-top: 0.5px solid var(--border); margin: 20px 0; }
-  .footer { margin-top: 24px; padding-top: 16px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text3); line-height: 1.7; }
-  .last-updated { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  /* 웹훅 설정 */
+  .webhook-section { background:var(--bg2); border:0.5px solid var(--amber); border-radius:8px; padding:16px; margin-bottom:20px; }
+  .webhook-title { font-size:11px; color:var(--amber); letter-spacing:0.06em; margin-bottom:10px; }
+  .webhook-input { display:flex; gap:8px; }
+  .webhook-input input { flex:1; background:var(--bg3); border:0.5px solid var(--border2); color:var(--text); border-radius:6px; padding:7px 10px; font-size:12px; }
+  .webhook-input input:focus { outline:none; border-color:var(--amber); }
+  .webhook-save-btn { background:none; border:0.5px solid var(--amber); color:var(--amber); padding:6px 14px; border-radius:6px; font-size:12px; cursor:pointer; white-space:nowrap; }
+
+  .divider { border:none; border-top:0.5px solid var(--border); margin:20px 0; }
+  .footer { margin-top:24px; padding-top:16px; border-top:0.5px solid var(--border); font-size:11px; color:var(--text3); line-height:1.8; }
 </style>
 </head>
 <body>
@@ -136,74 +140,79 @@
       <div class="header-sub" id="today-date">로딩 중...</div>
     </div>
     <div class="header-right">
-      <button class="refresh-btn" onclick="loadAllData()">↻ 전체 새로고침</button>
-      <button class="ai-btn" id="ai-analyze-btn" onclick="runAIAnalysis()">⚡ AI 뉴스 분석</button>
+      <button class="btn btn-border" onclick="loadAllData()">↻ 데이터 새로고침</button>
+      <button class="btn btn-ai" id="ai-btn" onclick="runAIAnalysis()">⚡ AI 뉴스 분석</button>
       <div class="last-updated" id="last-updated"></div>
     </div>
   </div>
 
-  <!-- 상태 표시줄 -->
-  <div class="status-row" id="status-row">
-    <div class="status-chip"><span class="status-dot idle" id="dot-finance"></span> 금융데이터</div>
-    <div class="status-chip"><span class="status-dot idle" id="dot-solar"></span> 태양활동</div>
-    <div class="status-chip"><span class="status-dot idle" id="dot-news"></span> 뉴스RSS</div>
-    <div class="status-chip"><span class="status-dot idle" id="dot-ai"></span> AI분석</div>
+  <!-- 상태 표시 -->
+  <div class="status-row">
+    <div class="chip"><span class="sdot idle" id="dot-krw"></span> 환율</div>
+    <div class="chip"><span class="sdot idle" id="dot-vix"></span> VIX</div>
+    <div class="chip"><span class="sdot idle" id="dot-wti"></span> WTI</div>
+    <div class="chip"><span class="sdot idle" id="dot-solar"></span> 태양</div>
+    <div class="chip"><span class="sdot idle" id="dot-ai"></span> AI분석</div>
+    <div class="chip" id="chip-webhook" style="border-color:var(--amber); color:var(--amber);">⚙ Make.com 미설정</div>
   </div>
 
   <!-- 경보 바 -->
-  <div class="alert-bar alert-warn" id="alert-bar">
-    ⚡ 데이터 로딩 중 — 잠시 기다려 주세요
+  <div class="alert-bar alert-warn" id="alert-bar">⚡ 데이터 로딩 중...</div>
+
+  <!-- ── Make.com 웹훅 설정 ── -->
+  <div class="webhook-section">
+    <div class="webhook-title">⚙ 자동화 웹훅 설정 — Make.com (무료) 연동 시 VIX·WTI·CSI·RSS 자동 수집</div>
+    <div class="webhook-input">
+      <input type="text" id="webhook-url" placeholder="Make.com 웹훅 URL 붙여넣기 (https://hook.eu1.make.com/…)" />
+      <button class="webhook-save-btn" onclick="saveWebhook()">저장</button>
+      <button class="webhook-save-btn" style="border-color:var(--teal);color:var(--teal);" onclick="callWebhook()">▶ 호출</button>
+    </div>
+    <div style="font-size:10px; color:var(--text3); margin-top:8px;">
+      설정 방법 → <a href="#guide" style="color:var(--blue);">하단 가이드 참조</a> · Make.com 무료 플랜: 1,000 ops/월
+    </div>
   </div>
 
-  <!-- ═══════════════════════════════════════ -->
   <!-- 천수축 -->
-  <!-- ═══════════════════════════════════════ -->
   <div class="axis-section">
     <div class="axis-header">
       <div class="axis-dot dot-red"></div>
       <div class="axis-title">천수축 (天數) — 주기·긴장 지표</div>
       <span class="axis-badge">3/4 자동</span>
     </div>
-
     <div class="grid grid-4">
 
-      <!-- 환율 (자동) -->
       <div class="mcard">
-        <span class="mcard-src">Frankfurter</span>
+        <span class="mcard-src">Open Exchange</span>
         <div class="mcard-label"><span class="badge badge-auto">자동</span> 원/달러 환율</div>
         <div class="mcard-value loading" id="krw-value">로딩 중...</div>
         <div class="mcard-sub" id="krw-status">—</div>
         <a class="mcard-link" href="https://finance.naver.com/marketindex/" target="_blank">↗ 네이버 금융</a>
       </div>
 
-      <!-- VIX (자동) -->
       <div class="mcard">
-        <span class="mcard-src">Yahoo Finance</span>
-        <div class="mcard-label"><span class="badge badge-auto">자동</span> VIX 공포지수</div>
-        <div class="mcard-value loading" id="vix-value">로딩 중...</div>
-        <div class="mcard-sub" id="vix-status">—</div>
+        <span class="mcard-src">Make웹훅/수동</span>
+        <div class="mcard-label"><span class="badge badge-info" id="vix-badge">웹훅</span> VIX 공포지수</div>
+        <div class="mcard-value" id="vix-value">—</div>
+        <div class="mcard-sub" id="vix-status">웹훅 또는 수동 입력</div>
         <a class="mcard-link" href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank">↗ Yahoo Finance</a>
       </div>
 
-      <!-- 태양흑점 (자동) -->
       <div class="mcard">
         <span class="mcard-src">NOAA SWPC</span>
         <div class="mcard-label"><span class="badge badge-auto">자동</span> 태양흑점 F10.7</div>
         <div class="mcard-value loading" id="solar-value">로딩 중...</div>
         <div class="mcard-sub" id="solar-status">—</div>
-        <a class="mcard-link" href="https://www.spaceweather.gov" target="_blank">↗ NOAA 태양활동</a>
+        <a class="mcard-link" href="https://www.spaceweather.gov" target="_blank">↗ NOAA</a>
       </div>
 
-      <!-- 콘드라티에프 (고정) -->
       <div class="mcard">
         <div class="mcard-label"><span class="badge badge-info">고정</span> 콘드라티에프 위치</div>
-        <div class="mcard-value" style="font-size:16px; padding-top:4px;">하강 후반부</div>
+        <div class="mcard-value" style="font-size:16px;padding-top:4px;">하강 후반부</div>
         <div class="mcard-sub"><span class="badge badge-warn">전환 임박</span> 50~60년 주기</div>
-        <a class="mcard-link" href="https://en.wikipedia.org/wiki/Kondratiev_wave" target="_blank">↗ 콘드라티에프 파동</a>
+        <a class="mcard-link" href="https://en.wikipedia.org/wiki/Kondratiev_wave" target="_blank">↗ 설명</a>
       </div>
 
     </div>
-
     <div class="flag-row">
       <span class="flag-pill">번외 · 행성정렬 2026.08.12 예정</span>
       <span class="flag-pill">번외 · 병오년(丙午年) 화기(火氣) 극성기</span>
@@ -213,166 +222,140 @@
 
   <hr class="divider">
 
-  <!-- ═══════════════════════════════════════ -->
   <!-- 지수축 -->
-  <!-- ═══════════════════════════════════════ -->
   <div class="axis-section">
     <div class="axis-header">
       <div class="axis-dot dot-amber"></div>
       <div class="axis-title">지수축 (地數) — 한반도·지정학 지표</div>
-      <span class="axis-badge">3/6 자동</span>
+      <span class="axis-badge">1/6 자동 + 웹훅</span>
     </div>
-
     <div class="grid grid-4">
 
-      <!-- WTI (자동) -->
       <div class="mcard">
-        <span class="mcard-src">Yahoo Finance</span>
-        <div class="mcard-label"><span class="badge badge-auto">자동</span> 국제유가 WTI</div>
-        <div class="mcard-value loading" id="wti-value">로딩 중...</div>
-        <div class="mcard-sub" id="wti-status">—</div>
+        <span class="mcard-src">Make웹훅/수동</span>
+        <div class="mcard-label"><span class="badge badge-info" id="wti-badge">웹훅</span> 국제유가 WTI</div>
+        <div class="mcard-value" id="wti-value">—</div>
+        <div class="mcard-sub" id="wti-status">웹훅 또는 수동 입력</div>
         <a class="mcard-link" href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank">↗ Yahoo Finance</a>
       </div>
 
-      <!-- 외국인 순매수 (자동) -->
       <div class="mcard">
-        <span class="mcard-src">KRX</span>
-        <div class="mcard-label"><span class="badge badge-auto">자동</span> 외국인 순매수 (억원)</div>
-        <div class="mcard-value loading" id="foreign-value">로딩 중...</div>
-        <div class="mcard-sub" id="foreign-status">—</div>
-        <a class="mcard-link" href="https://www.krx.co.kr" target="_blank">↗ KRX 외국인 동향</a>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 외국인 순매수 (억원)</div>
+        <div class="mcard-value" id="foreign-value">—</div>
+        <div class="mcard-sub" id="foreign-status">수동 입력</div>
+        <a class="mcard-link" href="https://www.krx.co.kr" target="_blank">↗ KRX</a>
       </div>
 
-      <!-- 수출 증감률 (수동 유지 - 월간 데이터) -->
       <div class="mcard">
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 수출 증감률 (전년비)</div>
         <div class="mcard-value" id="export-value">—</div>
-        <div class="mcard-sub" id="export-status">월간 발표 → 직접 입력</div>
-        <a class="mcard-link" href="https://www.motie.go.kr" target="_blank">↗ 산업부 수출통계</a>
+        <div class="mcard-sub" id="export-status">월간 발표 후 입력</div>
+        <a class="mcard-link" href="https://www.motie.go.kr" target="_blank">↗ 산업부</a>
       </div>
 
-      <!-- 지정학 리스크 (AI 자동) -->
       <div class="mcard">
-        <span class="mcard-src">AI+GDELT</span>
+        <span class="mcard-src">AI분석</span>
         <div class="mcard-label"><span class="badge badge-info">AI분석</span> 글로벌 분쟁 강도</div>
         <div class="mcard-value" id="conflict-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="conflict-status">AI 분석 버튼 클릭</div>
-        <a class="mcard-link" href="https://acleddata.com/dashboard/" target="_blank">↗ ACLED 분쟁 데이터</a>
+        <a class="mcard-link" href="https://acleddata.com/dashboard/" target="_blank">↗ ACLED</a>
       </div>
 
     </div>
-
-    <!-- 바 지표 (AI 자동) -->
     <div class="grid grid-2" style="margin-top:10px;">
       <div class="bar-card">
-        <div class="bar-label">북한 도발 동향 (월간 누적) <span class="badge badge-info" style="font-size:9px; margin-left:4px;">AI분석</span></div>
-        <div class="bar-wrap"><div class="bar-fill" id="nk-bar" style="width:0%; background: var(--amber);"></div></div>
+        <div class="bar-label">북한 도발 동향 (월간) <span class="badge badge-info" style="font-size:9px;margin-left:4px;">AI분석</span></div>
+        <div class="bar-wrap"><div class="bar-fill" id="nk-bar" style="width:0%;background:var(--amber);"></div></div>
         <div class="bar-note" id="nk-note">AI 분석 버튼 클릭</div>
-        <a class="bar-link" href="https://www.unikorea.go.kr" target="_blank">↗ 통일부 동향</a>
+        <a class="bar-link" href="https://www.unikorea.go.kr" target="_blank">↗ 통일부</a>
       </div>
       <div class="bar-card">
-        <div class="bar-label">정상외교 접촉 빈도 (월간) <span class="badge badge-info" style="font-size:9px; margin-left:4px;">AI분석</span></div>
-        <div class="bar-wrap"><div class="bar-fill" id="diploma-bar" style="width:0%; background: var(--teal);"></div></div>
+        <div class="bar-label">정상외교 접촉 (월간) <span class="badge badge-info" style="font-size:9px;margin-left:4px;">AI분석</span></div>
+        <div class="bar-wrap"><div class="bar-fill" id="diploma-bar" style="width:0%;background:var(--teal);"></div></div>
         <div class="bar-note" id="diploma-note">AI 분석 버튼 클릭</div>
-        <a class="bar-link" href="https://www.mofa.go.kr" target="_blank">↗ 외교부 일정</a>
+        <a class="bar-link" href="https://www.mofa.go.kr" target="_blank">↗ 외교부</a>
       </div>
     </div>
   </div>
 
   <hr class="divider">
 
-  <!-- ═══════════════════════════════════════ -->
   <!-- 인수축 -->
-  <!-- ═══════════════════════════════════════ -->
   <div class="axis-section">
     <div class="axis-header">
       <div class="axis-dot dot-teal"></div>
       <div class="axis-title">인수축 (人數) — 언어·행동·민심 지표</div>
-      <span class="axis-badge">3/3 자동</span>
+      <span class="axis-badge">웹훅+AI</span>
     </div>
-
     <div class="grid grid-3">
 
-      <!-- CSI (자동 - 한국은행 ECOS) -->
       <div class="mcard">
-        <span class="mcard-src">한국은행 ECOS</span>
-        <div class="mcard-label"><span class="badge badge-auto">자동</span> 소비자심리지수 CSI</div>
-        <div class="mcard-value loading" id="csi-value">로딩 중...</div>
-        <div class="mcard-sub" id="csi-status">—</div>
-        <a class="mcard-link" href="https://ecos.bok.or.kr/#/Short/WEB100" target="_blank">↗ 한국은행 ECOS</a>
+        <span class="mcard-src">Make웹훅/수동</span>
+        <div class="mcard-label"><span class="badge badge-info" id="csi-badge">웹훅</span> 소비자심리지수 CSI</div>
+        <div class="mcard-value" id="csi-value">—</div>
+        <div class="mcard-sub" id="csi-status">웹훅 또는 수동 입력</div>
+        <a class="mcard-link" href="https://ecos.bok.or.kr" target="_blank">↗ 한국은행 ECOS</a>
       </div>
 
-      <!-- 발언 톤 (AI 자동) -->
       <div class="mcard">
-        <span class="mcard-src">AI+RSS</span>
+        <span class="mcard-src">AI분석</span>
         <div class="mcard-label"><span class="badge badge-info">AI분석</span> 주요 발언 톤 (대결 %)</div>
         <div class="mcard-value" id="tone-value">—</div>
         <div class="mcard-sub" id="tone-status">AI 분석 버튼 클릭</div>
-        <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">↗ UN 공식 발언</a>
+        <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">↗ UN 발언</a>
       </div>
 
-      <!-- 말·행동 간극 (AI 자동) -->
       <div class="mcard">
-        <span class="mcard-src">AI+RSS</span>
+        <span class="mcard-src">AI분석</span>
         <div class="mcard-label"><span class="badge badge-info">AI분석</span> 말·행동 간극</div>
         <div class="mcard-value" id="gap-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="gap-status">AI 분석 버튼 클릭</div>
-        <a class="mcard-link" href="https://iiss.org" target="_blank">↗ IISS 군사동향</a>
+        <a class="mcard-link" href="https://iiss.org" target="_blank">↗ IISS</a>
       </div>
 
     </div>
-
-    <!-- 폭발 임계점 종합 -->
     <div class="threshold-card">
-      <div class="bar-label">폭발 임계점 종합 지수 (인수축)</div>
-      <div class="threshold-bar-wrap">
-        <div class="threshold-bar-fill" id="threshold-bar" style="width:0%;"></div>
-      </div>
+      <div class="bar-label">폭발 임계점 종합 지수</div>
+      <div class="threshold-bar-wrap"><div class="threshold-bar-fill" id="threshold-bar" style="width:0%;"></div></div>
       <div class="threshold-labels"><span>안정 0</span><span>경계 50</span><span>임계 100</span></div>
-      <div style="font-size:11px; color:var(--text2); margin-top:8px;" id="threshold-note">데이터 로드 후 자동 계산됩니다</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;" id="threshold-note">데이터 입력 후 자동 계산</div>
     </div>
   </div>
 
   <hr class="divider">
 
-  <!-- ═══════════════════════════════════════ -->
-  <!-- AI 분석 결과 패널 -->
-  <!-- ═══════════════════════════════════════ -->
+  <!-- AI 분석 결과 -->
   <div class="ai-panel" id="ai-panel" style="display:none;">
-    <div class="ai-panel-title">
-      ⚡ AI 뉴스 분석 결과 <span id="ai-panel-time" style="font-size:10px; color:var(--text3); margin-left:auto;"></span>
-    </div>
+    <div class="ai-panel-title">⚡ AI 뉴스 분석 결과 <span id="ai-panel-time" style="font-size:10px;color:var(--text3);margin-left:auto;"></span></div>
     <div id="ai-result-text" class="ai-result"></div>
     <div id="ai-keywords" class="ai-keywords"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════ -->
-  <!-- 수동 입력 패널 (축소형) -->
-  <!-- ═══════════════════════════════════════ -->
+  <!-- 수동 입력 -->
   <div class="manual-section">
     <div class="manual-title" onclick="toggleManual()">
-      ✏️ 수동 보정 패널 (자동화 불가 항목) <span id="manual-toggle" style="margin-left:auto; font-size:10px;">▼ 펼치기</span>
+      ✏️ 수동 입력 패널 <span id="manual-toggle" style="margin-left:auto;font-size:10px;">▼ 펼치기</span>
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-grid">
         <div class="manual-item">
-          <label>수출 증감률 (%) <a href="https://www.motie.go.kr" target="_blank" style="color:var(--text3); font-size:10px;">↗ 산업부</a></label>
-          <input type="number" id="input-export" placeholder="예: 3.1" step="0.1">
-        </div>
-        <div class="manual-item">
-          <label>VIX 보정값 (자동 실패시)</label>
+          <label>VIX <a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
           <input type="number" id="input-vix" placeholder="예: 22.5" step="0.1">
         </div>
         <div class="manual-item">
-          <label>WTI 보정값 (자동 실패시)</label>
+          <label>WTI ($) <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
           <input type="number" id="input-wti" placeholder="예: 74.2" step="0.1">
         </div>
         <div class="manual-item">
-          <label>외국인 순매수 보정 (억원)</label>
+          <label>외국인 순매수 (억원) <a href="https://www.krx.co.kr" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
           <input type="number" id="input-foreign" placeholder="예: -4200">
         </div>
         <div class="manual-item">
-          <label>글로벌 분쟁 강도 보정</label>
+          <label>수출 증감률 (%)</label>
+          <input type="number" id="input-export" placeholder="예: 3.1" step="0.1">
+        </div>
+        <div class="manual-item">
+          <label>글로벌 분쟁 강도</label>
           <select id="input-conflict">
             <option value="">선택</option>
             <option value="low">낮음</option>
@@ -382,23 +365,23 @@
           </select>
         </div>
         <div class="manual-item">
-          <label>북한 도발 횟수 보정 (이달)</label>
+          <label>북한 도발 (이달 건수)</label>
           <input type="number" id="input-nk" placeholder="예: 0" min="0" max="10">
         </div>
         <div class="manual-item">
-          <label>외교 접촉 보정 (이달 건수)</label>
+          <label>외교 접촉 (이달 건수)</label>
           <input type="number" id="input-diploma" placeholder="예: 3" min="0" max="20">
         </div>
         <div class="manual-item">
-          <label>CSI 보정값 (자동 실패시)</label>
+          <label>CSI <a href="https://ecos.bok.or.kr" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
           <input type="number" id="input-csi" placeholder="예: 94.2" step="0.1">
         </div>
         <div class="manual-item">
-          <label>발언 톤 보정 (대결 %)</label>
+          <label>발언 톤 — 대결 비율 (%)</label>
           <input type="number" id="input-tone" placeholder="예: 62" min="0" max="100">
         </div>
         <div class="manual-item">
-          <label>말·행동 간극 보정</label>
+          <label>말·행동 간극</label>
           <select id="input-gap">
             <option value="">선택</option>
             <option value="low">낮음 (일치)</option>
@@ -407,612 +390,504 @@
           </select>
         </div>
       </div>
-      <button class="apply-btn" onclick="applyManual()">▶ 보정값 적용</button>
+      <button class="apply-btn" onclick="applyManual()">▶ 적용</button>
     </div>
   </div>
 
-  <!-- 푸터 -->
+  <!-- Make.com 가이드 -->
+  <div class="info-box" id="guide">
+    <div class="info-title">📋 MAKE.COM 무료 자동화 설정 가이드 (10분 설정, 평생 무료)</div>
+    <div style="line-height:2;">
+    <b style="color:var(--text);">Step 1</b> — <a href="https://www.make.com" target="_blank">make.com</a> 가입 (무료) → [Create a scenario] 클릭<br>
+    <b style="color:var(--text);">Step 2</b> — 첫 모듈: <b style="color:var(--amber);">Webhooks → Custom webhook</b> 추가 → URL 복사 → 위 입력란에 붙여넣기<br>
+    <b style="color:var(--text);">Step 3</b> — HTTP 모듈 추가: <b style="color:var(--teal);">Yahoo Finance VIX</b><br>
+    &nbsp;&nbsp;&nbsp;URL: <code style="color:var(--teal);font-size:10px;">https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=1d</code><br>
+    &nbsp;&nbsp;&nbsp;→ Parse JSON → 추출: <code style="color:var(--teal);font-size:10px;">chart.result[0].meta.regularMarketPrice</code><br>
+    <b style="color:var(--text);">Step 4</b> — 동일하게 <b style="color:var(--teal);">WTI</b>(<code style="color:var(--text3);font-size:10px;">CL%3DF</code>), <b style="color:var(--teal);">통일부 RSS</b>, <b style="color:var(--teal);">외교부 RSS</b> 모듈 추가<br>
+    <b style="color:var(--text);">Step 5</b> — 마지막 모듈: <b style="color:var(--amber);">Webhooks → Webhook response</b><br>
+    &nbsp;&nbsp;&nbsp;Body에 JSON 조합: <code style="color:var(--text3);font-size:10px;">{"vix": {{vix}}, "wti": {{wti}}, "nk_news": "{{rss_summary}}"}</code><br>
+    <b style="color:var(--text);">Step 6</b> — [Schedule] → 매일 오전 9시 자동 실행 설정<br>
+    <br>
+    <span style="color:var(--text3);">Make.com 무료 플랜: 1,000 ops/월 (매일 실행 시 ~300 ops/월 소모). CSI는 </span>
+    <a href="https://ecos.bok.or.kr/api/" target="_blank">한국은행 ECOS API 무료 키</a>
+    <span style="color:var(--text3);"> 발급 후 동일 방식 추가 가능.</span>
+    </div>
+  </div>
+
   <div class="footer">
     본 현황판은 상수학적 프레임과 현대 데이터 지표를 결합한 개인 분석 도구입니다.<br>
-    <strong style="color:var(--text2);">자동 연동</strong>: 환율(Frankfurter API) · VIX·WTI(Yahoo Finance) · 태양흑점(NOAA SWPC) · 외국인순매수(KRX) · CSI(한국은행 ECOS)<br>
-    <strong style="color:var(--blue);">AI 자동분석</strong>: 北도발·외교접촉·발언톤·간극·분쟁강도 → Claude API + 뉴스RSS 실시간 파싱<br>
-    <strong style="color:var(--text3);">수동 유지</strong>: 수출증감률 (월간 발표, 자동화 어려움)<br>
-    모든 판단과 결정은 사용자 본인의 책임 하에 이루어져야 합니다.
+    <b style="color:var(--text2);">완전 자동</b>: 환율(Open Exchange Rates CORS OK) · 태양흑점(NOAA SWPC CORS OK)<br>
+    <b style="color:var(--amber);">Make.com 웹훅</b>: VIX · WTI · CSI · RSS뉴스 → 서버사이드 수집 후 이 페이지로 전달 (CORS 우회)<br>
+    <b style="color:var(--blue);">AI 분석</b>: GDELT 무료 API + Claude → 北도발 · 외교 · 분쟁강도 · 발언톤 · 간극 자동 추출<br>
+    <b style="color:var(--text3);">수동 유지</b>: 외국인순매수(KRX) · 수출증감률(월간)
   </div>
 
 </div>
 
 <script>
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
 // 유틸
-// ════════════════════════════════════════
-function setDot(id, active) {
-  const el = document.getElementById('dot-' + id);
-  if (!el) return;
-  el.classList.toggle('idle', !active);
-}
-
+// ══════════════════════════════════════════
 function setDate() {
-  const d = new Date();
-  const days = ['일','월','화','수','목','금','토'];
+  const d = new Date(), days=['일','월','화','수','목','금','토'];
   document.getElementById('today-date').textContent =
     `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]}) · 병오년(丙午年)`;
 }
-
-// CORS 프록시 (Yahoo Finance 등 CORS 차단 우회)
-function corsProxy(url) {
-  return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+function dot(id, state) { // 'idle' | 'ok' | 'err'
+  const el = document.getElementById('dot-' + id);
+  if (!el) return;
+  el.className = 'sdot ' + state;
 }
 
-// ════════════════════════════════════════
-// 1. 환율 (Frankfurter - 완전 무료, CORS OK)
-// ════════════════════════════════════════
-async function loadExchangeRate() {
-  setDot('finance', true);
-  try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=KRW');
-    const data = await res.json();
-    const krw = data.rates.KRW;
-    if (!krw) throw new Error('no KRW');
-    const el = document.getElementById('krw-value');
-    el.textContent = krw.toLocaleString('ko-KR', {maximumFractionDigits: 0}) + '원';
-    el.classList.remove('loading');
-    const status = document.getElementById('krw-status');
-    if (krw >= 1400) {
-      status.innerHTML = '<span class="badge badge-danger">고위험</span> 1400원 초과';
-    } else if (krw >= 1300) {
-      status.innerHTML = '<span class="badge badge-warn">경계</span> 1300원대 약세';
-    } else {
-      status.innerHTML = '<span class="badge badge-ok">안정</span> 1300원 미만';
-    }
-    return krw;
-  } catch(e) {
-    // 폴백: exchangerate.fun
+// ══════════════════════════════════════════
+// 1. 환율 — openexchangerates.org (app_id 불필요 최신 엔드포인트)
+//    → 실제로 CORS 허용: api.exchangerate-api.com (무료 키)
+//    → 키 없이 CORS OK: cdn.jsdelivr.net 미러 or open.er-api.com
+// ══════════════════════════════════════════
+async function loadKRW() {
+  dot('krw', 'idle');
+  const urls = [
+    // 완전 무료·키없음·CORS OK
+    'https://open.er-api.com/v6/latest/USD',
+    // 폴백
+    'https://api.exchangerate.fun/latest?base=USD'
+  ];
+  for (const url of urls) {
     try {
-      const res2 = await fetch('https://api.exchangerate.fun/latest?base=USD');
-      const data2 = await res2.json();
-      const krw = data2.rates.KRW;
-      document.getElementById('krw-value').textContent = Math.round(krw).toLocaleString() + '원';
-      document.getElementById('krw-value').classList.remove('loading');
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const krw = data.rates?.KRW || data.conversion_rates?.KRW;
+      if (!krw) continue;
+      const el = document.getElementById('krw-value');
+      el.textContent = Math.round(krw).toLocaleString('ko-KR') + '원';
+      el.classList.remove('loading');
+      const status = document.getElementById('krw-status');
+      if (krw >= 1400) status.innerHTML = '<span class="badge badge-danger">고위험</span> 1400원 초과';
+      else if (krw >= 1300) status.innerHTML = '<span class="badge badge-warn">경계</span> 1300원대';
+      else status.innerHTML = '<span class="badge badge-ok">안정</span> 1300원 미만';
+      dot('krw', 'ok');
       return krw;
-    } catch(e2) {
-      document.getElementById('krw-value').textContent = '로드 실패';
-      document.getElementById('krw-value').classList.remove('loading');
-      return null;
-    }
+    } catch(e) { continue; }
   }
+  dot('krw', 'err');
+  document.getElementById('krw-value').textContent = '—';
+  document.getElementById('krw-value').classList.remove('loading');
+  document.getElementById('krw-status').innerHTML =
+    '<a href="https://finance.naver.com/marketindex/" target="_blank" style="color:var(--teal);">↗ 직접 확인</a>';
+  return null;
 }
 
-// ════════════════════════════════════════
-// 2. VIX & WTI (Yahoo Finance via CORS 프록시)
-// ════════════════════════════════════════
-async function loadYahooFinance(symbol) {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
-  // 먼저 직접 시도
-  try {
-    const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-    if (!res.ok) throw new Error('direct failed');
-    const data = await res.json();
-    return data.chart.result[0].meta.regularMarketPrice;
-  } catch(e) {
-    // CORS 프록시 우회
-    try {
-      const res2 = await fetch(corsProxy(url));
-      const data2 = await res2.json();
-      return data2.chart.result[0].meta.regularMarketPrice;
-    } catch(e2) {
-      return null;
-    }
-  }
-}
-
-async function loadVIX() {
-  const price = await loadYahooFinance('^VIX');
-  const el = document.getElementById('vix-value');
-  if (price !== null) {
-    el.textContent = price.toFixed(1);
-    el.classList.remove('loading');
-    const badge = price >= 30 ? 'badge-danger' : price >= 20 ? 'badge-warn' : 'badge-ok';
-    const label = price >= 30 ? '공포' : price >= 20 ? '경계' : '안정';
-    document.getElementById('vix-status').innerHTML = `<span class="badge ${badge}">${label}</span> 기준 20`;
-  } else {
-    el.textContent = '—';
-    el.classList.remove('loading');
-    document.getElementById('vix-status').innerHTML = '<span style="color:var(--text3);font-size:10px;">수동 입력 필요</span>';
-  }
-  return price;
-}
-
-async function loadWTI() {
-  const price = await loadYahooFinance('CL=F');
-  const el = document.getElementById('wti-value');
-  if (price !== null) {
-    el.textContent = '$' + price.toFixed(1);
-    el.classList.remove('loading');
-    const badge = price >= 90 ? 'badge-danger' : price >= 75 ? 'badge-warn' : 'badge-ok';
-    const label = price >= 90 ? '고유가' : price >= 75 ? '경계' : '안정';
-    document.getElementById('wti-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
-  } else {
-    el.textContent = '—';
-    el.classList.remove('loading');
-    document.getElementById('wti-status').innerHTML = '<span style="color:var(--text3);font-size:10px;">수동 입력 필요</span>';
-  }
-  return price;
-}
-
-// ════════════════════════════════════════
-// 3. 태양흑점 (NOAA SWPC)
-// ════════════════════════════════════════
-async function loadSolarFlux() {
-  setDot('solar', true);
+// ══════════════════════════════════════════
+// 2. 태양흑점 — NOAA (CORS OK, 기존 그대로)
+// ══════════════════════════════════════════
+async function loadSolar() {
+  dot('solar', 'idle');
   try {
     const res = await fetch('https://services.swpc.noaa.gov/json/solar-cycle/predicted-solar-cycle.json');
     const data = await res.json();
     const latest = data[data.length - 1];
-    const f107 = latest ? Math.round(latest['predicted_f10.7'] || latest['smoothed_f10.7'] || 150) : 150;
+    const f107 = Math.round(latest?.['predicted_f10.7'] || latest?.['smoothed_f10.7'] || 150);
     const el = document.getElementById('solar-value');
     el.textContent = f107;
     el.classList.remove('loading');
-    const status = document.getElementById('solar-status');
-    if (f107 >= 200) {
-      status.innerHTML = '<span class="badge badge-danger">극대 강</span> NOAA';
-    } else if (f107 >= 150) {
-      status.innerHTML = '<span class="badge badge-warn">극대기</span> NOAA';
-    } else {
-      status.innerHTML = '<span class="badge badge-ok">보통</span> NOAA';
-    }
-    return f107;
+    if (f107 >= 200) document.getElementById('solar-status').innerHTML = '<span class="badge badge-danger">극대 강</span>';
+    else if (f107 >= 150) document.getElementById('solar-status').innerHTML = '<span class="badge badge-warn">극대기</span>';
+    else document.getElementById('solar-status').innerHTML = '<span class="badge badge-ok">보통</span>';
+    dot('solar', 'ok');
   } catch(e) {
     document.getElementById('solar-value').textContent = '~180';
     document.getElementById('solar-value').classList.remove('loading');
     document.getElementById('solar-status').innerHTML = '<span class="badge badge-warn">극대기 추정</span>';
-    return 180;
-  } finally {
-    setDot('solar', false);
+    dot('solar', 'err');
   }
 }
 
-// ════════════════════════════════════════
-// 4. KRX 외국인 순매수 (공공 API)
-// ════════════════════════════════════════
-async function loadForeignBuying() {
+// ══════════════════════════════════════════
+// 3. Make.com 웹훅 연동
+//    Make 시나리오가 VIX·WTI·CSI·뉴스를 수집해
+//    이 페이지로 JSON 응답 → CORS 완전 우회
+// ══════════════════════════════════════════
+function saveWebhook() {
+  const url = document.getElementById('webhook-url').value.trim();
+  if (!url) return;
+  localStorage.setItem('nkai-webhook', url);
+  updateWebhookChip(url);
+  alert('웹훅 URL 저장됨. ▶ 호출 버튼으로 테스트하세요.');
+}
+
+function loadWebhookURL() {
+  const saved = localStorage.getItem('nkai-webhook');
+  if (saved) {
+    document.getElementById('webhook-url').value = saved;
+    updateWebhookChip(saved);
+  }
+}
+
+function updateWebhookChip(url) {
+  const chip = document.getElementById('chip-webhook');
+  if (url) {
+    chip.textContent = '✓ Make.com 연동됨';
+    chip.style.borderColor = 'var(--teal)';
+    chip.style.color = 'var(--teal)';
+  }
+}
+
+async function callWebhook() {
+  const url = localStorage.getItem('nkai-webhook');
+  if (!url) { alert('웹훅 URL을 먼저 저장하세요.'); return; }
   try {
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2,'0');
-    const mm = String(today.getMonth()+1).padStart(2,'0');
-    const yyyy = today.getFullYear();
-    const dateStr = `${yyyy}${mm}${dd}`;
-
-    // KRX 외국인 동향 API (공개, 키 불필요)
-    const url = `http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd`;
-    const params = new URLSearchParams({
-      bld: 'dbms/MDC/STAT/standard/MDCSTAT02303',
-      locale: 'ko_KR',
-      trdDd: dateStr,
-      money: '1',
-      csvxls_isNo: 'false'
-    });
-
-    // HTTPS CORS 프록시 경유
-    const proxyUrl = corsProxy('https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' + params);
-    const res = await fetch(proxyUrl);
+    const res = await fetch(url, { method: 'GET' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-
-    // KRX 응답 파싱
-    if (data.OutBlock_1 && data.OutBlock_1.length > 0) {
-      const kospi = data.OutBlock_1.find(r => r.ISU_NM === 'KOSPI' || r.MKT_NM === 'KOSPI');
-      if (kospi) {
-        const netBuy = parseInt((kospi.FRGN_NET_BUY_AMT || '0').replace(/,/g, ''));
-        const netBuy100M = Math.round(netBuy / 100000000); // 원 → 억원
-        setForeignValue(netBuy100M);
-        return netBuy100M;
-      }
-    }
-    throw new Error('parse fail');
+    applyWebhookData(data);
   } catch(e) {
-    document.getElementById('foreign-value').textContent = '—';
-    document.getElementById('foreign-value').classList.remove('loading');
-    document.getElementById('foreign-status').innerHTML = '<span style="color:var(--text3);font-size:10px;">수동 입력 필요</span>';
-    return null;
+    // Make.com은 GET 응답이 아닌 경우도 있음 - POST 시도
+    try {
+      const res2 = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch' })
+      });
+      const data2 = await res2.json();
+      applyWebhookData(data2);
+    } catch(e2) {
+      console.warn('Webhook call failed:', e2);
+    }
   }
 }
 
-function setForeignValue(val) {
-  const el = document.getElementById('foreign-value');
-  el.textContent = (val >= 0 ? '+' : '') + val.toLocaleString() + '억';
-  el.classList.remove('loading');
-  const badge = val < -5000 ? 'badge-danger' : val < 0 ? 'badge-warn' : 'badge-ok';
-  const label = val < -5000 ? '대규모 이탈' : val < 0 ? '순매도' : '순매수';
-  document.getElementById('foreign-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
-}
-
-// ════════════════════════════════════════
-// 5. 소비자심리지수 (한국은행 ECOS 공개 샘플 API)
-// ECOS 샘플 엔드포인트 – 키 없이 호출 가능 (제한적 데이터)
-// 실키 발급: https://ecos.bok.or.kr/api/
-// ════════════════════════════════════════
-async function loadCSI() {
-  try {
-    // 한국은행 ECOS 공개 샘플 키로 소비자심리지수(722Y001) 조회
-    // 실제 사용시 무료 API 키 등록 권장 (https://ecos.bok.or.kr/api/#/DevGuide/tokenMake)
-    const today = new Date();
-    const ym = `${today.getFullYear()}${String(today.getMonth()).padStart(2,'0')}`;
-    const ymPrev = `${today.getMonth() === 0 ? today.getFullYear()-1 : today.getFullYear()}${String(today.getMonth() === 0 ? 12 : today.getMonth()).padStart(2,'0')}`;
-
-    const url = `https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/1/722Y001/MM/${ymPrev}/${ym}/0101000`;
-    const proxyUrl = corsProxy(url);
-    const res = await fetch(proxyUrl);
-    const data = await res.json();
-
-    if (data.StatisticSearch && data.StatisticSearch.row && data.StatisticSearch.row.length > 0) {
-      const csi = parseFloat(data.StatisticSearch.row[0].DATA_VALUE);
-      setCSIValue(csi);
-      return csi;
-    }
-    throw new Error('no data');
-  } catch(e) {
-    document.getElementById('csi-value').textContent = '—';
-    document.getElementById('csi-value').classList.remove('loading');
-    document.getElementById('csi-status').innerHTML = `<span style="font-size:10px;color:var(--text3);">
-      <a href="https://ecos.bok.or.kr/api/" target="_blank" style="color:var(--blue);">무료 API 키 발급</a> 후 아래 수동입력
-    </span>`;
-    return null;
+function applyWebhookData(data) {
+  // Make.com에서 받은 데이터 적용
+  // 예상 JSON: { vix, wti, csi, nk_count, diploma_count, conflict, tone_pct, gap, summary }
+  if (data.vix !== undefined) {
+    const v = parseFloat(data.vix);
+    setVIX(v);
+    document.getElementById('input-vix').value = v;
   }
+  if (data.wti !== undefined) {
+    const w = parseFloat(data.wti);
+    setWTI(w);
+    document.getElementById('input-wti').value = w;
+  }
+  if (data.csi !== undefined) {
+    const c = parseFloat(data.csi);
+    setCSI(c);
+    document.getElementById('input-csi').value = c;
+  }
+  if (data.nk_news || data.nk_count !== undefined) {
+    const nk = parseInt(data.nk_count) || 0;
+    document.getElementById('nk-bar').style.width = Math.min(nk*15,100)+'%';
+    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk===0?'저강도':nk<=2?'주의':'고강도'} (Make)`;
+  }
+  if (data.diploma_count !== undefined) {
+    const d = parseInt(data.diploma_count)||0;
+    document.getElementById('diploma-bar').style.width = Math.min(d*12,100)+'%';
+    document.getElementById('diploma-note').textContent = `이달 ${d}건 · ${d>=5?'활발':d>=2?'보통':'저조'} (Make)`;
+  }
+  // AI 분석 결과가 포함된 경우
+  if (data.conflict || data.tone_pct !== undefined || data.gap) {
+    applyAIResult(data);
+  }
+  recalc();
+  saveToLocal();
 }
 
-function setCSIValue(val) {
-  const el = document.getElementById('csi-value');
-  el.textContent = val.toFixed(1);
-  el.classList.remove('loading');
-  const badge = val >= 100 ? 'badge-ok' : val >= 90 ? 'badge-warn' : 'badge-danger';
-  const label = val >= 100 ? '긍정' : val >= 90 ? '위축' : '심각 위축';
-  document.getElementById('csi-status').innerHTML = `<span class="badge ${badge}">${label}</span> 기준 100`;
-}
-
-// ════════════════════════════════════════
-// 6. AI 뉴스 분석 (Claude API + RSS)
-//    북한 도발, 외교, 발언톤, 간극, 분쟁 강도 자동 추출
-// ════════════════════════════════════════
-
-// RSS 피드를 CORS 프록시를 통해 파싱
-async function fetchRSS(url) {
-  try {
-    const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=10`;
-    const res = await fetch(proxyUrl);
-    const data = await res.json();
-    if (data.status === 'ok') {
-      return data.items.map(item => `[${item.title}] ${item.description ? item.description.replace(/<[^>]*>/g,'').substring(0,100) : ''}`).join('\n');
-    }
-  } catch(e) {}
-  return '';
-}
-
+// ══════════════════════════════════════════
+// 4. GDELT + Claude API로 AI 분석
+//    GDELT: 완전 무료, 키 없음, CORS OK
+//    Claude API: Make.com 웹훅 통해 서버사이드 호출 (CORS 우회)
+// ══════════════════════════════════════════
 async function runAIAnalysis() {
-  const btn = document.getElementById('ai-analyze-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ 분석 중...';
-  setDot('news', true);
-  setDot('ai', true);
+  const btn = document.getElementById('ai-btn');
+  btn.disabled = true; btn.textContent = '⏳ 분석 중...';
+  dot('ai', 'idle');
 
   const panel = document.getElementById('ai-panel');
   panel.style.display = 'block';
-  document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">뉴스 RSS 수집 중...</span>';
-  document.getElementById('ai-keywords').innerHTML = '';
+  document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">GDELT 뉴스 수집 중...</span>';
 
   try {
-    // 여러 무료 뉴스 RSS 수집
-    const [uniNews, mofaNews, un_news] = await Promise.all([
-      fetchRSS('https://www.unikorea.go.kr/rss/unikorea.xml'),
-      fetchRSS('https://www.mofa.go.kr/rss/mofa.xml'),
-      fetchRSS('https://news.un.org/feed/subscribe/en/news/topic/peace-and-security/feed/rss.xml')
-    ]);
+    // GDELT v2 무료 API — CORS OK, 키 불필요
+    // 북한·한반도 관련 최근 기사 요약 수집
+    const now = new Date();
+    const gdeltQueries = [
+      // 북한 도발 관련
+      'https://api.gdeltproject.org/api/v2/summary/summary?d=web&t=summary&k=north+korea+missile+provocation&ts=custom&sdt=' + getGdeltDate(7) + '&edt=' + getGdeltDate(0) + '&svt=zoom&stc=yes&ssc=yes&sshp=1&fra=1&frm=1&fsv=1&frb=1&fsa=1&fs=yes&fdb=yes&fdl=yes',
+      // 글로벌 분쟁
+      'https://api.gdeltproject.org/api/v2/summary/summary?d=web&t=summary&k=global+conflict+war&ts=custom&sdt=' + getGdeltDate(3) + '&edt=' + getGdeltDate(0) + '&svt=zoom&stc=yes&ssc=yes&sshp=1&fra=1',
+    ];
 
-    setDot('news', false);
-    document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">Claude AI 분석 중...</span>';
-
-    const today = new Date().toLocaleDateString('ko-KR');
-    const prompt = `당신은 한반도 정세 분석 전문가입니다. 아래 최신 뉴스 RSS 데이터를 분석하여 각 지표를 정확히 추출하세요.
-
-분석 날짜: ${today}
-
-[통일부/북한 관련 뉴스]
-${uniNews || '(피드 없음)'}
-
-[외교부 뉴스]
-${mofaNews || '(피드 없음)'}
-
-[UN 평화안보 뉴스]
-${un_news || '(피드 없음)'}
-
-위 뉴스를 바탕으로 다음 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만:
-{
-  "nk_count": 이번달 북한 도발/미사일/핵 관련 건수(0-10 정수),
-  "diploma_count": 이번달 한국 정상외교 접촉 건수(0-20 정수),
-  "conflict": "low/mid/high/critical 중 하나 (글로벌 분쟁 강도)",
-  "tone_pct": 주요 발언의 대결/강경 비율(0-100 정수),
-  "gap": "low/mid/high 중 하나 (말-행동 간극)",
-  "summary": "3문장 이내 핵심 요약",
-  "keywords": ["키워드1", "키워드2", "키워드3", "키워드4", "키워드5"]
-}`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await response.json();
-    const raw = data.content[0].text.trim();
-
-    // JSON 파싱
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('no JSON');
-    const result = JSON.parse(jsonMatch[0]);
-
-    // 결과 적용
-    applyAIResult(result);
-
-    document.getElementById('ai-panel-time').textContent = new Date().toLocaleTimeString('ko-KR');
-    document.getElementById('ai-result-text').textContent = result.summary || '분석 완료';
-
-    // 키워드 태그
-    if (result.keywords) {
-      document.getElementById('ai-keywords').innerHTML =
-        result.keywords.map(kw => `<span class="ai-kw">${kw}</span>`).join('');
+    // GDELT 기사 수집
+    let gdeltSummary = '';
+    for (const url of gdeltQueries) {
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        // GDELT는 HTML 반환, 텍스트에서 핵심 키워드 추출
+        const stripped = text.replace(/<[^>]*>/g,'').replace(/\s+/g,' ').substring(0,500);
+        gdeltSummary += stripped + '\n';
+      } catch(e) { continue; }
     }
 
-    // 임계점 재계산
-    const tone = result.tone_pct;
-    const gap = result.gap;
-    const nk = result.nk_count;
-    const diploma = result.diploma_count;
-    const csiEl = document.getElementById('csi-value');
-    const csi = parseFloat(csiEl.textContent) || NaN;
-    calculateThreshold(tone, gap, csi, nk, diploma);
+    // Make.com 웹훅을 통해 Claude API 호출 (서버사이드)
+    const webhookUrl = localStorage.getItem('nkai-webhook');
+    if (webhookUrl) {
+      document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">Make.com → Claude AI 분석 중...</span>';
+      try {
+        const res = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'ai_analyze',
+            gdelt_data: gdeltSummary,
+            date: now.toLocaleDateString('ko-KR')
+          })
+        });
+        const result = await res.json();
+        if (result && (result.nk_count !== undefined || result.conflict)) {
+          applyAIResult(result);
+          document.getElementById('ai-result-text').textContent = result.summary || 'AI 분석 완료';
+          if (result.keywords) {
+            document.getElementById('ai-keywords').innerHTML =
+              result.keywords.map(k => `<span class="ai-kw">${k}</span>`).join('');
+          }
+          document.getElementById('ai-panel-time').textContent = now.toLocaleTimeString('ko-KR');
+          dot('ai', 'ok');
+          recalc();
+          return;
+        }
+      } catch(e) { console.warn('Make webhook AI call failed:', e); }
+    }
+
+    // 웹훅 없는 경우 — GDELT 데이터로 규칙 기반 자동 분석 (AI 없이)
+    document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">규칙 기반 분석 중...</span>';
+    const ruleResult = ruleBasedAnalysis(gdeltSummary);
+    applyAIResult(ruleResult);
+    document.getElementById('ai-result-text').textContent =
+      ruleResult.summary + '\n\n[Make.com 웹훅 설정 시 Claude AI 정밀 분석 가능]';
+    document.getElementById('ai-panel-time').textContent = now.toLocaleTimeString('ko-KR');
+    dot('ai', 'ok');
+    recalc();
 
   } catch(e) {
-    document.getElementById('ai-result-text').textContent = 'AI 분석 실패: ' + e.message + '\n아래 수동 입력 패널에서 직접 입력해 주세요.';
+    document.getElementById('ai-result-text').textContent = '분석 실패: ' + e.message;
+    dot('ai', 'err');
   } finally {
-    btn.disabled = false;
-    btn.textContent = '⚡ AI 뉴스 분석';
-    setDot('ai', false);
+    btn.disabled = false; btn.textContent = '⚡ AI 뉴스 분석';
   }
 }
 
-function applyAIResult(result) {
-  // 북한 도발
-  if (result.nk_count !== undefined) {
-    const nk = result.nk_count;
-    document.getElementById('nk-bar').style.width = Math.min(nk * 15, 100) + '%';
-    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk === 0 ? '저강도' : nk <= 2 ? '주의' : '고강도'} (AI 분석)`;
-  }
-
-  // 외교 접촉
-  if (result.diploma_count !== undefined) {
-    const d = result.diploma_count;
-    document.getElementById('diploma-bar').style.width = Math.min(d * 12, 100) + '%';
-    document.getElementById('diploma-note').textContent = `이달 ${d}건 · ${d >= 5 ? '활발' : d >= 2 ? '보통' : '저조'} (AI 분석)`;
-  }
-
-  // 글로벌 분쟁
-  if (result.conflict) {
-    const conflictMap = { low:['낮음','badge-ok'], mid:['중간','badge-warn'], high:['높음','badge-danger'], critical:['매우 높음','badge-danger'] };
-    const [label, badge] = conflictMap[result.conflict] || ['—','badge-neutral'];
-    document.getElementById('conflict-value').textContent = label;
-    document.getElementById('conflict-status').innerHTML = `<span class="badge ${badge}">${label}</span> AI 분석`;
-  }
-
-  // 발언 톤
-  if (result.tone_pct !== undefined) {
-    const t = result.tone_pct;
-    document.getElementById('tone-value').textContent = '대결 ' + t + '%';
-    const badge = t >= 70 ? 'badge-danger' : t >= 50 ? 'badge-warn' : 'badge-ok';
-    const label = t >= 70 ? '고강도 긴장' : t >= 50 ? '긴장' : '협력 우세';
-    document.getElementById('tone-status').innerHTML = `<span class="badge ${badge}">${label}</span> AI 분석`;
-  }
-
-  // 말·행동 간극
-  if (result.gap) {
-    const gapMap = { low:['낮음 (일치)','badge-ok'], mid:['중간','badge-warn'], high:['높음 (불일치)','badge-danger'] };
-    const [label, badge] = gapMap[result.gap] || ['—','badge-neutral'];
-    document.getElementById('gap-value').textContent = label;
-    document.getElementById('gap-status').innerHTML = `<span class="badge ${badge}">${label}</span> AI 분석`;
-  }
-
-  // 경보 바 업데이트
-  const nkCount = result.nk_count || 0;
-  const vixEl = document.getElementById('vix-value');
-  const wtiEl = document.getElementById('wti-value');
-  const vix = parseFloat(vixEl.textContent) || NaN;
-  const wti = parseFloat((wtiEl.textContent || '').replace('$','')) || NaN;
-  updateAlertBar(vix, wti, result.conflict, nkCount);
+function getGdeltDate(daysAgo) {
+  const d = new Date(); d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().replace(/[-:T]/g,'').substring(0,14);
 }
 
-// ════════════════════════════════════════
-// 계산 함수들
-// ════════════════════════════════════════
-function calculateThreshold(tone, gap, csi, nk, diploma) {
+// GDELT 텍스트 기반 규칙 분석 (AI 없이 키워드 카운팅)
+function ruleBasedAnalysis(text) {
+  const t = text.toLowerCase();
+  const nkKeywords = ['missile','launch','nuclear','provocation','north korea fired','ballistic','icbm','weapon'];
+  const conflictKeywords = ['war','conflict','attack','strike','casualties','battle','offensive'];
+  const diplomacyKeywords = ['summit','meeting','talks','negotiation','diplomacy','dialogue'];
+  const aggressiveKeywords = ['condemn','sanction','threat','denounce','warning','retaliation'];
+
+  const nk_count = nkKeywords.filter(k => t.includes(k)).length;
+  const conflictScore = conflictKeywords.filter(k => t.includes(k)).length;
+  const diplo = diplomacyKeywords.filter(k => t.includes(k)).length;
+  const aggr = aggressiveKeywords.filter(k => t.includes(k)).length;
+
+  const conflict = conflictScore >= 5 ? 'critical' : conflictScore >= 3 ? 'high' : conflictScore >= 1 ? 'mid' : 'low';
+  const tone_pct = Math.min(100, aggr * 12 + nk_count * 8);
+  const gap = nk_count >= 3 ? 'high' : nk_count >= 1 ? 'mid' : 'low';
+
+  return {
+    nk_count: Math.min(nk_count, 5),
+    diploma_count: diplo,
+    conflict,
+    tone_pct,
+    gap,
+    summary: `GDELT 뉴스 분석 (규칙 기반): 북한 관련 ${nk_count}건 신호, 분쟁강도 ${conflict}, 대결 발언 ${tone_pct}%. Make.com 웹훅 설정 시 Claude AI 정밀 분석으로 전환됩니다.`,
+    keywords: nkKeywords.filter(k => t.includes(k)).slice(0,3).concat(conflictKeywords.filter(k=>t.includes(k)).slice(0,2))
+  };
+}
+
+// ══════════════════════════════════════════
+// 값 설정 함수
+// ══════════════════════════════════════════
+function setVIX(v) {
+  document.getElementById('vix-value').textContent = v.toFixed(1);
+  const b = v>=30?'badge-danger':v>=20?'badge-warn':'badge-ok';
+  const l = v>=30?'공포':v>=20?'경계':'안정';
+  document.getElementById('vix-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
+  dot('vix', 'ok');
+}
+function setWTI(w) {
+  document.getElementById('wti-value').textContent = '$' + w.toFixed(1);
+  const b = w>=90?'badge-danger':w>=75?'badge-warn':'badge-ok';
+  const l = w>=90?'고유가':w>=75?'경계':'안정';
+  document.getElementById('wti-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
+  dot('wti', 'ok');
+}
+function setCSI(c) {
+  document.getElementById('csi-value').textContent = c.toFixed(1);
+  const b = c>=100?'badge-ok':c>=90?'badge-warn':'badge-danger';
+  const l = c>=100?'긍정':c>=90?'위축':'심각 위축';
+  document.getElementById('csi-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
+}
+
+function applyAIResult(r) {
+  if (r.nk_count !== undefined) {
+    const nk = r.nk_count;
+    document.getElementById('nk-bar').style.width = Math.min(nk*15,100)+'%';
+    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk===0?'저강도':nk<=2?'주의':'고강도'} (AI)`;
+  }
+  if (r.diploma_count !== undefined) {
+    const d = r.diploma_count;
+    document.getElementById('diploma-bar').style.width = Math.min(d*12,100)+'%';
+    document.getElementById('diploma-note').textContent = `이달 ${d}건 · ${d>=5?'활발':d>=2?'보통':'저조'} (AI)`;
+  }
+  if (r.conflict) {
+    const m = {low:['낮음','badge-ok'],mid:['중간','badge-warn'],high:['높음','badge-danger'],critical:['매우 높음','badge-danger']};
+    const [l,b] = m[r.conflict]||['—','badge-neutral'];
+    document.getElementById('conflict-value').textContent = l;
+    document.getElementById('conflict-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
+  }
+  if (r.tone_pct !== undefined) {
+    const t = r.tone_pct;
+    document.getElementById('tone-value').textContent = '대결 '+t+'%';
+    const b = t>=70?'badge-danger':t>=50?'badge-warn':'badge-ok';
+    document.getElementById('tone-status').innerHTML = `<span class="badge ${b}">${t>=70?'고강도':t>=50?'긴장':'협력 우세'}</span>`;
+  }
+  if (r.gap) {
+    const m = {low:['낮음 (일치)','badge-ok'],mid:['중간','badge-warn'],high:['높음 (불일치)','badge-danger']};
+    const [l,b] = m[r.gap]||['—','badge-neutral'];
+    document.getElementById('gap-value').textContent = l;
+    document.getElementById('gap-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
+  }
+}
+
+// ══════════════════════════════════════════
+// 임계점 계산 & 경보
+// ══════════════════════════════════════════
+function recalc() {
+  const tone = parseFloat(document.getElementById('tone-value').textContent.replace('대결 ','').replace('%',''));
+  const gapTxt = document.getElementById('gap-value').textContent;
+  const gap = gapTxt.includes('불일치') ? 'high' : gapTxt.includes('중간') ? 'mid' : gapTxt.includes('일치') ? 'low' : '';
+  const csiTxt = document.getElementById('csi-value').textContent;
+  const csi = parseFloat(csiTxt) || NaN;
+  const nkNote = document.getElementById('nk-note').textContent;
+  const nk = parseInt(nkNote.match(/이달 (\d+)건/)?.[1]) || 0;
+  const dipNote = document.getElementById('diploma-note').textContent;
+  const diploma = parseInt(dipNote.match(/이달 (\d+)건/)?.[1]) || 0;
+
   let score = 0, count = 0;
   if (!isNaN(tone)) { score += tone; count++; }
-  const gapScore = { low: 20, mid: 50, high: 90 };
-  if (gap && gapScore[gap]) { score += gapScore[gap]; count++; }
-  if (!isNaN(csi)) { score += Math.max(0, 100 - csi); count++; }
-  if (!isNaN(nk)) score += nk * 10;
-  if (!isNaN(diploma)) score -= diploma * 5;
-  if (count > 0) score = score / Math.max(count, 1);
+  const gapS = {low:20,mid:50,high:90};
+  if (gap && gapS[gap]) { score += gapS[gap]; count++; }
+  if (!isNaN(csi)) { score += Math.max(0, 100-csi); count++; }
+  score += nk * 10;
+  score -= diploma * 5;
+  if (count > 0) score /= Math.max(count, 1);
   score = Math.max(0, Math.min(100, score));
 
   const bar = document.getElementById('threshold-bar');
   bar.style.width = Math.round(score) + '%';
-  if (score >= 70) {
-    bar.style.background = 'var(--red)';
-    document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 충돌 가능성 높음`;
-  } else if (score >= 40) {
-    bar.style.background = 'var(--amber)';
-    document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 경계 구간`;
-  } else {
-    bar.style.background = 'var(--teal)';
-    document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 안정 구간`;
-  }
+  if (score >= 70) { bar.style.background = 'var(--red)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 충돌 가능성 높음`; }
+  else if (score >= 40) { bar.style.background = 'var(--amber)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 경계 구간`; }
+  else { bar.style.background = 'var(--teal)'; document.getElementById('threshold-note').textContent = `임계점 지수 ${Math.round(score)} — 안정 구간`; }
+
+  // 경보
+  const vix = parseFloat(document.getElementById('vix-value').textContent)||NaN;
+  const wti = parseFloat((document.getElementById('wti-value').textContent||'').replace('$',''))||NaN;
+  const conflictTxt = document.getElementById('conflict-value').textContent;
+  const conflict = conflictTxt.includes('매우') ? 'critical' : conflictTxt.includes('높음') ? 'high' : conflictTxt.includes('중간') ? 'mid' : 'low';
+  const bar2 = document.getElementById('alert-bar');
+  const warns = [];
+  if (!isNaN(vix) && vix >= 30) warns.push(`VIX ${vix.toFixed(1)} (공포)`);
+  if (!isNaN(wti) && wti >= 90) warns.push(`WTI $${wti.toFixed(1)} (고유가)`);
+  if (conflict === 'high' || conflict === 'critical') warns.push('분쟁 고강도');
+  if (nk >= 3) warns.push(`北 도발 ${nk}건`);
+  if (warns.length === 0) { bar2.className='alert-bar alert-ok'; bar2.textContent='✓ 안정 구간 — 정기 모니터링'; }
+  else if (warns.length >= 2) { bar2.className='alert-bar alert-danger'; bar2.textContent='🚨 복합 경보: '+warns.join(' · '); }
+  else { bar2.className='alert-bar alert-warn'; bar2.textContent='⚡ 경계: '+warns.join(' · '); }
 }
 
-function updateAlertBar(vix, wti, conflict, nk) {
-  const bar = document.getElementById('alert-bar');
-  const warnings = [];
-  if (!isNaN(vix) && vix >= 30) warnings.push(`VIX ${vix.toFixed(1)} (공포구간)`);
-  if (!isNaN(wti) && wti >= 90) warnings.push(`WTI $${wti.toFixed(1)} (고유가)`);
-  if (conflict === 'high' || conflict === 'critical') warnings.push('글로벌 분쟁 고강도');
-  if (nk >= 3) warnings.push(`북한 도발 ${nk}건`);
-
-  if (warnings.length === 0) {
-    bar.className = 'alert-bar alert-ok';
-    bar.textContent = '✓ 현재 지표 안정 구간 — 정기 모니터링 유지';
-  } else if (warnings.length >= 2) {
-    bar.className = 'alert-bar alert-danger';
-    bar.textContent = '🚨 복합 경보: ' + warnings.join(' · ');
-  } else {
-    bar.className = 'alert-bar alert-warn';
-    bar.textContent = '⚡ 경계 신호: ' + warnings.join(' · ');
-  }
-}
-
-// ════════════════════════════════════════
-// 수동 보정 패널
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
+// 수동 입력
+// ══════════════════════════════════════════
 function toggleManual() {
   const body = document.getElementById('manual-body');
-  const toggle = document.getElementById('manual-toggle');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  toggle.textContent = isOpen ? '▼ 펼치기' : '▲ 접기';
+  const tog = document.getElementById('manual-toggle');
+  const open = body.classList.toggle('open');
+  tog.textContent = open ? '▲ 접기' : '▼ 펼치기';
 }
 
 function applyManual() {
-  const exportRate = parseFloat(document.getElementById('input-export').value);
-  const vix = parseFloat(document.getElementById('input-vix').value);
-  const wti = parseFloat(document.getElementById('input-wti').value);
-  const foreign = parseFloat(document.getElementById('input-foreign').value);
-  const conflict = document.getElementById('input-conflict').value;
-  const nk = parseInt(document.getElementById('input-nk').value) || 0;
-  const diploma = parseInt(document.getElementById('input-diploma').value) || 0;
-  const csi = parseFloat(document.getElementById('input-csi').value);
-  const tone = parseFloat(document.getElementById('input-tone').value);
-  const gap = document.getElementById('input-gap').value;
+  const vix=parseFloat(document.getElementById('input-vix').value);
+  const wti=parseFloat(document.getElementById('input-wti').value);
+  const foreign=parseFloat(document.getElementById('input-foreign').value);
+  const exportRate=parseFloat(document.getElementById('input-export').value);
+  const conflict=document.getElementById('input-conflict').value;
+  const nk=parseInt(document.getElementById('input-nk').value)||0;
+  const diploma=parseInt(document.getElementById('input-diploma').value)||0;
+  const csi=parseFloat(document.getElementById('input-csi').value);
+  const tone=parseFloat(document.getElementById('input-tone').value);
+  const gap=document.getElementById('input-gap').value;
 
-  if (!isNaN(exportRate)) {
-    document.getElementById('export-value').textContent = (exportRate >= 0 ? '+' : '') + exportRate.toFixed(1) + '%';
-    const badge = exportRate >= 5 ? 'badge-ok' : exportRate >= 0 ? 'badge-info' : 'badge-warn';
-    const label = exportRate >= 5 ? '호조' : exportRate >= 0 ? '소폭 증가' : '감소';
-    document.getElementById('export-status').innerHTML = `<span class="badge ${badge}">${label}</span>`;
+  if(!isNaN(vix)) setVIX(vix);
+  if(!isNaN(wti)) setWTI(wti);
+  if(!isNaN(csi)) setCSI(csi);
+  if(!isNaN(foreign)) {
+    document.getElementById('foreign-value').textContent=(foreign>=0?'+':'')+foreign.toLocaleString()+'억';
+    const b=foreign<-5000?'badge-danger':foreign<0?'badge-warn':'badge-ok';
+    document.getElementById('foreign-status').innerHTML=`<span class="badge ${b}">${foreign<-5000?'대규모 이탈':foreign<0?'순매도':'순매수'}</span>`;
   }
-
-  // 자동값이 없을 때 보정값 사용
-  if (!isNaN(vix) && document.getElementById('vix-value').textContent === '—') {
-    document.getElementById('vix-value').textContent = vix.toFixed(1);
-    const badge = vix >= 30 ? 'badge-danger' : vix >= 20 ? 'badge-warn' : 'badge-ok';
-    document.getElementById('vix-status').innerHTML = `<span class="badge ${badge}">${vix >= 30 ? '공포' : vix >= 20 ? '경계' : '안정'}</span> 수동`;
+  if(!isNaN(exportRate)) {
+    document.getElementById('export-value').textContent=(exportRate>=0?'+':'')+exportRate.toFixed(1)+'%';
+    document.getElementById('export-status').innerHTML=`<span class="badge ${exportRate>=5?'badge-ok':exportRate>=0?'badge-info':'badge-warn'}">${exportRate>=5?'호조':exportRate>=0?'소폭 증가':'감소'}</span>`;
   }
-  if (!isNaN(wti) && document.getElementById('wti-value').textContent === '—') {
-    document.getElementById('wti-value').textContent = '$' + wti.toFixed(1);
-    const badge = wti >= 90 ? 'badge-danger' : wti >= 75 ? 'badge-warn' : 'badge-ok';
-    document.getElementById('wti-status').innerHTML = `<span class="badge ${badge}">${wti >= 90 ? '고유가' : wti >= 75 ? '경계' : '안정'}</span> 수동`;
-  }
-  if (!isNaN(foreign) && document.getElementById('foreign-value').textContent === '—') {
-    setForeignValue(foreign);
-  }
-  if (!isNaN(csi) && document.getElementById('csi-value').textContent === '—') {
-    setCSIValue(csi);
-  }
-
-  // 분쟁/북한/외교 보정
-  if (conflict) {
-    const conflictMap = { low:['낮음','badge-ok'], mid:['중간','badge-warn'], high:['높음','badge-danger'], critical:['매우 높음','badge-danger'] };
-    const [label, badge] = conflictMap[conflict];
-    document.getElementById('conflict-value').textContent = label;
-    document.getElementById('conflict-status').innerHTML = `<span class="badge ${badge}">${label}</span> 수동`;
-  }
-  if (!isNaN(nk)) {
-    document.getElementById('nk-bar').style.width = Math.min(nk * 15, 100) + '%';
-    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk === 0 ? '저강도' : nk <= 2 ? '주의' : '고강도'} (수동)`;
-  }
-  if (!isNaN(diploma)) {
-    document.getElementById('diploma-bar').style.width = Math.min(diploma * 12, 100) + '%';
-    document.getElementById('diploma-note').textContent = `이달 ${diploma}건 · ${diploma >= 5 ? '활발' : diploma >= 2 ? '보통' : '저조'} (수동)`;
-  }
-  if (!isNaN(tone)) {
-    document.getElementById('tone-value').textContent = '대결 ' + Math.round(tone) + '%';
-    const badge = tone >= 70 ? 'badge-danger' : tone >= 50 ? 'badge-warn' : 'badge-ok';
-    document.getElementById('tone-status').innerHTML = `<span class="badge ${badge}">${tone >= 70 ? '고강도 긴장' : tone >= 50 ? '긴장' : '협력 우세'}</span> 수동`;
-  }
-  if (gap) {
-    const gapMap = { low:['낮음 (일치)','badge-ok'], mid:['중간','badge-warn'], high:['높음 (불일치)','badge-danger'] };
-    const [label, badge] = gapMap[gap];
-    document.getElementById('gap-value').textContent = label;
-    document.getElementById('gap-status').innerHTML = `<span class="badge ${badge}">${label}</span> 수동`;
-  }
-
-  calculateThreshold(tone, gap, csi, nk, diploma);
-  updateAlertBar(
-    parseFloat(document.getElementById('vix-value').textContent),
-    parseFloat((document.getElementById('wti-value').textContent||'').replace('$','')),
-    conflict || document.getElementById('conflict-value').textContent,
-    nk
-  );
-
+  applyAIResult({ conflict, nk_count:nk, diploma_count:diploma,
+    tone_pct:isNaN(tone)?undefined:tone, gap });
+  recalc();
   saveToLocal();
 }
 
-// ════════════════════════════════════════
-// 로컬스토리지
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
+// 로컬 저장/복원
+// ══════════════════════════════════════════
 function saveToLocal() {
-  const fields = ['input-vix','input-wti','input-foreign','input-export','input-conflict','input-nk','input-diploma','input-csi','input-tone','input-gap'];
-  const data = {};
-  fields.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
-  localStorage.setItem('nkai-manual', JSON.stringify(data));
+  const ids=['input-vix','input-wti','input-foreign','input-export','input-conflict','input-nk','input-diploma','input-csi','input-tone','input-gap'];
+  const d={};
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) d[id]=el.value; });
+  localStorage.setItem('nkai-manual', JSON.stringify(d));
 }
-
 function restoreFromLocal() {
   try {
-    const data = JSON.parse(localStorage.getItem('nkai-manual'));
-    if (!data) return;
-    Object.entries(data).forEach(([id, val]) => {
-      const el = document.getElementById(id);
-      if (el && val) el.value = val;
-    });
+    const d=JSON.parse(localStorage.getItem('nkai-manual'));
+    if(!d) return;
+    Object.entries(d).forEach(([id,v])=>{ const el=document.getElementById(id); if(el&&v) el.value=v; });
     applyManual();
   } catch(e) {}
 }
 
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
 // 전체 로드
-// ════════════════════════════════════════
+// ══════════════════════════════════════════
 async function loadAllData() {
-  document.getElementById('last-updated').textContent = '새로고침 중...';
-  setDot('finance', true);
-
-  await Promise.all([
-    loadExchangeRate(),
-    loadVIX(),
-    loadWTI(),
-    loadSolarFlux(),
-    loadForeignBuying(),
-    loadCSI()
-  ]);
-
-  setDot('finance', false);
-
-  const now = new Date();
-  document.getElementById('last-updated').textContent =
+  document.getElementById('last-updated').textContent='새로고침 중...';
+  await Promise.all([loadKRW(), loadSolar()]);
+  // 웹훅이 있으면 자동 호출
+  if (localStorage.getItem('nkai-webhook')) {
+    await callWebhook();
+  }
+  const now=new Date();
+  document.getElementById('last-updated').textContent=
     `최종 갱신 ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
 }
 
 // 초기화
 setDate();
+loadWebhookURL();
 loadAllData();
 restoreFromLocal();
 </script>
