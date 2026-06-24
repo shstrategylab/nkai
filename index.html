@@ -263,7 +263,7 @@
       <div class="axis-title">인수축 (人數) — 언어·행동·민심 지표</div>
       <span class="axis-badge">AI분석</span>
     </div>
-    <div class="grid grid-3">
+    <div class="grid grid-4">
 
       <div class="mcard">
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 소비자심리지수 CSI</div>
@@ -273,19 +273,35 @@
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">AI분석</span>
-        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 주요 발언 톤 (대결 %)</div>
+        <span class="mcard-src">AI분석 · UN기준</span>
+        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 발언 톤 — 대결 % <span style="color:var(--text3);font-size:9px;">(북미·UN)</span></div>
         <div class="mcard-value" id="tone-value">—</div>
         <div class="mcard-sub" id="tone-status">AI 분석 버튼 클릭</div>
-        <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">↗ UN 발언</a>
+        <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">↗ UN 발언록</a>
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">AI분석</span>
-        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 말·행동 간극</div>
+        <span class="mcard-src">수동</span>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 발언 톤 — 대결 % <span style="color:var(--text3);font-size:9px;">(국내 정치)</span></div>
+        <div class="mcard-value" id="tone-dom-value">—</div>
+        <div class="mcard-sub" id="tone-dom-status">수동 입력</div>
+        <a class="mcard-link" href="https://www.bigkinds.or.kr" target="_blank">↗ 빅카인즈</a>
+      </div>
+
+      <div class="mcard">
+        <span class="mcard-src">AI분석 · IISS</span>
+        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 말·행동 간극 <span style="color:var(--text3);font-size:9px;">(북·국제)</span></div>
         <div class="mcard-value" id="gap-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="gap-status">AI 분석 버튼 클릭</div>
         <a class="mcard-link" href="https://iiss.org" target="_blank">↗ IISS</a>
+      </div>
+
+      <div class="mcard">
+        <span class="mcard-src">수동</span>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 말·행동 간극 <span style="color:var(--text3);font-size:9px;">(국내 정치)</span></div>
+        <div class="mcard-value" id="gap-dom-value" style="font-size:16px;">—</div>
+        <div class="mcard-sub" id="gap-dom-status">수동 입력</div>
+        <a class="mcard-link" href="https://likms.assembly.go.kr/bill/main.do" target="_blank">↗ 국회 의안정보</a>
       </div>
 
     </div>
@@ -319,7 +335,7 @@
             VIX 공포지수
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글 금융 카드에서 실시간 수치 바로 표시됨 -->
-              <a href="https://www.google.com/search?q=CBOE+Volatility+Index+VIX+current+price" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: VIX 현재 수치">🔍</a>
+              <a href="https://www.google.com/search?q=VIX+지수+현재가" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: VIX 현재가 (금융카드 바로 표시)">🔍</a>
               <a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Yahoo Finance">↗</a>
             </span>
           </label>
@@ -331,7 +347,7 @@
             WTI 선물가 ($, CL=F)
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글 금융 카드: "CL=F" 검색하면 선물가 바로 표시 -->
-              <a href="https://www.google.com/search?q=CL%3DF+WTI+crude+oil+futures+price+today" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: WTI 선물가 현재">🔍</a>
+              <a href="https://www.google.com/search?q=CL%3DF+현재가" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: WTI 선물 CL=F 현재가 (금융카드 바로 표시)">🔍</a>
               <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Yahoo Finance">↗</a>
             </span>
           </label>
@@ -355,7 +371,7 @@
             수출 증감률 (%, 전년비)
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글: 관세청 수출입 무역통계 — 월간 수치 직접 검색 -->
-              <a href="https://www.google.com/search?q=%EC%9D%B4%EB%8B%AC+%EC%88%98%EC%B6%9C%EC%95%A1+%EC%A6%9D%EA%B0%90%EB%A5%A0+%EC%A0%84%EB%85%84%EB%8C%80%EB%B9%84+%EA%B4%80%EC%84%B8%EC%B2%AD+%EB%AC%B4%EC%97%AD%ED%86%B5%EA%B3%84" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 수출 증감률">🔍</a>
+              <a href="https://www.google.com/search?q=2026년+5월+수출+증감률+%25+산업통상자원부" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 월 수출 증감률 수치">🔍</a>
               <a href="https://tradedata.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="관세청 무역통계">↗</a>
             </span>
           </label>
@@ -367,7 +383,7 @@
             글로벌 분쟁 강도
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글 뉴스: 현재 진행 중인 전쟁·분쟁 건수 파악 -->
-              <a href="https://www.google.com/search?q=ongoing+wars+conflicts+world+2025+how+many+active" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 현재 진행 중 전쟁·분쟁 현황">🔍</a>
+              <a href="https://www.google.com/search?q=ACLED+2026+분쟁+사건+건수+월간+통계" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: ACLED 월간 분쟁 건수 수치">🔍</a>
               <a href="https://acleddata.com/dashboard/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="ACLED 분쟁 대시보드">↗</a>
             </span>
           </label>
@@ -385,7 +401,7 @@
             북한 도발 (이달 건수)
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글 뉴스: 이달 북한 미사일·포사격 등 도발 건수 확인 -->
-              <a href="https://www.google.com/search?q=North+Korea+missile+launch+provocation+2025+this+month+how+many+times" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 북한 도발 건수">🔍</a>
+              <a href="https://www.google.com/search?q=북한+미사일+발사+2026년+6월+횟수+건" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 북한 도발 횟수">🔍</a>
               <a href="https://www.unikorea.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="통일부">↗</a>
             </span>
           </label>
@@ -397,7 +413,7 @@
             외교 접촉 (이달 건수)
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글 뉴스: 이달 한국 정상·장관급 외교 접촉 횟수 파악 -->
-              <a href="https://www.google.com/search?q=%ED%95%9C%EA%B5%AD+%EC%99%B8%EA%B5%90%EC%9E%A5%EA%B4%80+%EC%A0%95%EC%83%81%ED%9A%8C%EB%8B%B4+%ED%9A%8C%EB%8B%B4+2025+%EC%9D%B4%EB%B2%88%EB%8B%AC" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 외교 접촉 건수">🔍</a>
+              <a href="https://www.google.com/search?q=%222026년+6월%22+한국+정상회담+OR+외교장관+회담+횟수" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 외교 접촉 건수">🔍</a>
               <a href="https://www.mofa.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="외교부">↗</a>
             </span>
           </label>
@@ -409,7 +425,7 @@
             소비자심리지수 CSI
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글: 한국은행 소비자심리지수 최신 발표 수치 검색 -->
-              <a href="https://www.google.com/search?q=%ED%95%9C%EA%B5%AD%EC%9D%80%ED%96%89+%EC%86%8C%EB%B9%84%EC%9E%90%EC%8B%AC%EB%A6%AC%EC%A7%80%EC%88%98+%EC%B5%9C%EC%8B%A0+%EB%AA%87%EC%A0%90+2025" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 CSI 수치">🔍</a>
+              <a href="https://www.google.com/search?q=한국은행+소비자심리지수+2026년+5월+발표+수치" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 CSI 발표 수치">🔍</a>
               <a href="https://ecos.bok.or.kr/#/SearchStat" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="한국은행 ECOS">↗</a>
             </span>
           </label>
@@ -418,11 +434,11 @@
 
         <div class="manual-item">
           <label>
-            발언 톤 — 대결 비율 (%)
+            발언 톤 — 대결 비율 % (UN·북미)
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글 뉴스: 최근 북미·남북 간 강경/위협 발언 빈도 파악 -->
-              <a href="https://www.google.com/search?q=North+Korea+US+hostile+threatening+statement+warning+2025+recent" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최근 대결 발언 동향">🔍</a>
-              <a href="https://www.un.org/press/en" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="UN 발언">↗</a>
+              <!-- UN 안보리 보도자료: 북한·미국 발언 강경 비율 파악 -->
+              <a href="https://www.google.com/search?q=%222026년+6월%22+UN+안보리+북한+미국+강경+발언+횟수+OR+성명" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 UN 대결 발언 빈도">🔍</a>
+              <a href="https://www.un.org/press/en" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="UN Press 발언록">↗</a>
             </span>
           </label>
           <input type="number" id="input-tone" placeholder="예: 62" min="0" max="100">
@@ -430,14 +446,43 @@
 
         <div class="manual-item">
           <label>
-            말·행동 간극
+            발언 톤 — 대결 비율 % (국내 정치)
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글 뉴스: 북한 대화 제스처 vs 실제 군사행동 간 괴리 파악 -->
-              <a href="https://www.google.com/search?q=North+Korea+diplomacy+signal+vs+military+action+gap+contradiction+2025" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 북한 말·행동 간극 동향">🔍</a>
+              <!-- 구글: 여야 대결·충돌 발언 비율 — 빅카인즈 or 뉴스 검색 -->
+              <a href="https://www.google.com/search?q=%222026년+6월%22+국회+여야+강경+발언+OR+막말+OR+충돌+횟수" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 여야 대결 발언 빈도">🔍</a>
+              <a href="https://www.bigkinds.or.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="빅카인즈 뉴스 분석">↗</a>
+            </span>
+          </label>
+          <input type="number" id="input-tone-dom" placeholder="예: 55" min="0" max="100">
+        </div>
+
+        <div class="manual-item">
+          <label>
+            말·행동 간극 (북한·국제)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글: 북한 대화 제스처 vs 실제 군사행동 간 괴리 -->
+              <a href="https://www.google.com/search?q=북한+대화+제안+동시+군사훈련+OR+미사일+2026+6월" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 북한 대화vs군사행동 동시 사례">🔍</a>
               <a href="https://iiss.org" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="IISS">↗</a>
             </span>
           </label>
           <select id="input-gap">
+            <option value="">선택</option>
+            <option value="low">낮음 (일치)</option>
+            <option value="mid">중간</option>
+            <option value="high">높음 (불일치)</option>
+          </select>
+        </div>
+
+        <div class="manual-item">
+          <label>
+            말·행동 간극 (국내 정치)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글: 여야 공약·정책 발표 vs 실제 입법·처리 결과 간 괴리 -->
+              <a href="https://www.google.com/search?q=%222026%22+국회+법안+처리율+OR+공약+이행률+%25+여야" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 국회 법안 처리율·공약 이행률 수치">🔍</a>
+              <a href="https://likms.assembly.go.kr/bill/main.do" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="국회 의안정보시스템">↗</a>
+            </span>
+          </label>
+          <select id="input-gap-dom">
             <option value="">선택</option>
             <option value="low">낮음 (일치)</option>
             <option value="mid">중간</option>
@@ -759,6 +804,9 @@ function applyManual() {
   const tone=parseFloat(document.getElementById('input-tone').value);
   const gap=document.getElementById('input-gap').value;
 
+  const toneDom = parseFloat(document.getElementById('input-tone-dom').value);
+  const gapDom = document.getElementById('input-gap-dom').value;
+
   if(!isNaN(vix)) setVIX(vix);
   if(!isNaN(wti)) {
     setWTI(wti);
@@ -778,6 +826,19 @@ function applyManual() {
     document.getElementById('export-value').textContent=(exportRate>=0?'+':'')+exportRate.toFixed(1)+'%';
     document.getElementById('export-status').innerHTML=`<span class="badge ${exportRate>=5?'badge-ok':exportRate>=0?'badge-info':'badge-warn'}">${exportRate>=5?'호조':exportRate>=0?'소폭 증가':'감소'}</span>`;
   }
+  // 국내 정치권 발언 톤
+  if(!isNaN(toneDom)) {
+    document.getElementById('tone-dom-value').textContent = '대결 '+toneDom+'%';
+    const bd = toneDom>=70?'badge-danger':toneDom>=50?'badge-warn':'badge-ok';
+    document.getElementById('tone-dom-status').innerHTML = `<span class="badge ${bd}">${toneDom>=70?'고대립':toneDom>=50?'대립':'협력 우세'}</span>`;
+  }
+  // 국내 정치권 말·행동 간극
+  if(gapDom) {
+    const mg = {low:['낮음 (일치)','badge-ok'],mid:['중간','badge-warn'],high:['높음 (불일치)','badge-danger']};
+    const [lg,bg] = mg[gapDom]||['—','badge-neutral'];
+    document.getElementById('gap-dom-value').textContent = lg;
+    document.getElementById('gap-dom-status').innerHTML = `<span class="badge ${bg}">${lg}</span>`;
+  }
   applyAIResult({ conflict, nk_count:nk, diploma_count:diploma,
     tone_pct:isNaN(tone)?undefined:tone, gap });
   recalc();
@@ -788,7 +849,7 @@ function applyManual() {
 // 로컬 저장/복원
 // ══════════════════════════════════════════
 function saveToLocal() {
-  const ids=['input-vix','input-wti','input-foreign','input-export','input-conflict','input-nk','input-diploma','input-csi','input-tone','input-gap'];
+  const ids=['input-vix','input-wti','input-foreign','input-export','input-conflict','input-nk','input-diploma','input-csi','input-tone','input-gap','input-tone-dom','input-gap-dom'];
   const d={};
   ids.forEach(id=>{ const el=document.getElementById(id); if(el) d[id]=el.value; });
   localStorage.setItem('nkai-manual', JSON.stringify(d));
