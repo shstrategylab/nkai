@@ -540,12 +540,24 @@ async function callWebhook() {
   async function safeFetch(fetchPromise) {
     const res = await fetchPromise;
     const text = await res.text();
-    // Make.com은 "Accepted", HTML 등 비-JSON을 반환하는 경우가 있음
     try {
       return JSON.parse(text);
     } catch(e) {
-      console.warn('Webhook non-JSON response:', text.substring(0, 100));
-      return null;
+      // Make.com 깨진 JSON 자동 복구
+      // 패턴: {"vix": "18.87", ", "wti": " 18.87"}
+      // 문제1: 값 뒤 ", " → ", 다음에 따옴표가 남음
+      // 문제2: 값 앞 공백
+      try {
+        const fixed = text
+          .replace(/",\s*",\s*/g, '", ')   // `", ", ` → `", `
+          .replace(/:\s*"\s+/g, ': "');     // `: " 18` → `: "18`
+        const parsed = JSON.parse(fixed);
+        console.info('Webhook JSON 자동 복구 성공:', fixed);
+        return parsed;
+      } catch(e2) {
+        console.warn('Webhook non-JSON response:', text.substring(0, 100));
+        return null;
+      }
     }
   }
 
