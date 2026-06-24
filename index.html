@@ -108,7 +108,7 @@
   .manual-body.open { display:block; }
   .manual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-bottom:12px; }
   .manual-item { display:flex; flex-direction:column; gap:5px; }
-  .manual-item label { font-size:11px; color:var(--text3); }
+  .manual-item label { font-size:11px; color:var(--text3); display:flex; align-items:center; gap:4px; }
   .manual-item input,.manual-item select { background:var(--bg3); border:0.5px solid var(--border2); color:var(--text); border-radius:6px; padding:7px 10px; font-size:13px; width:100%; }
   .manual-item input:focus,.manual-item select:focus { outline:none; border-color:var(--teal); }
   .apply-btn { background:none; border:0.5px solid var(--teal); color:var(--teal); padding:8px 18px; border-radius:6px; font-size:13px; cursor:pointer; }
@@ -209,10 +209,10 @@
 
       <div class="mcard">
         <span class="mcard-src" id="wti-src">수동</span>
-        <div class="mcard-label"><span class="badge badge-neutral" id="wti-badge">수동</span> 국제유가 WTI</div>
+        <div class="mcard-label"><span class="badge badge-neutral" id="wti-badge">수동</span> 국제유가 WTI <span style="color:var(--text3);font-weight:400;">(현물가)</span></div>
         <div class="mcard-value" id="wti-value">—</div>
         <div class="mcard-sub" id="wti-status">수동 입력</div>
-        <a class="mcard-link" href="https://www.eia.gov/opendata/" target="_blank">↗ EIA 공식</a>
+        <a class="mcard-link" href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank">↗ Yahoo Finance (CL=F 선물가)</a>
       </div>
 
       <div class="mcard">
@@ -313,24 +313,64 @@
     </div>
     <div class="manual-body" id="manual-body">
       <div class="manual-grid">
+
         <div class="manual-item">
-          <label>VIX <a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
+          <label>
+            VIX 공포지수
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 금융 카드에서 실시간 수치 바로 표시됨 -->
+              <a href="https://www.google.com/search?q=CBOE+Volatility+Index+VIX+current+price" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: VIX 현재 수치">🔍</a>
+              <a href="https://finance.yahoo.com/quote/%5EVIX/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Yahoo Finance">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-vix" placeholder="예: 22.5" step="0.1">
         </div>
+
         <div class="manual-item">
-          <label>WTI ($) <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
+          <label>
+            WTI 선물가 ($, CL=F)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 금융 카드: "CL=F" 검색하면 선물가 바로 표시 -->
+              <a href="https://www.google.com/search?q=CL%3DF+WTI+crude+oil+futures+price+today" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: WTI 선물가 현재">🔍</a>
+              <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Yahoo Finance">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-wti" placeholder="예: 74.2" step="0.1">
         </div>
+
         <div class="manual-item">
-          <label>외국인 순매수 (억원) <a href="https://www.krx.co.kr" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
+          <label>
+            외국인 순매수 (억원)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 네이버 증권 투자자별 매매현황 — 수치 테이블 바로 보임 -->
+              <a href="https://finance.naver.com/sise/investorDealTrendDay.naver?bizdate=&sosok=0" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="네이버 증권: 투자자별 매매현황">🔍</a>
+              <a href="https://www.krx.co.kr/main/main.jsp" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="KRX">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-foreign" placeholder="예: -4200">
         </div>
+
         <div class="manual-item">
-          <label>수출 증감률 (%)</label>
+          <label>
+            수출 증감률 (%, 전년비)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글: 관세청 수출입 무역통계 — 월간 수치 직접 검색 -->
+              <a href="https://www.google.com/search?q=%EC%9D%B4%EB%8B%AC+%EC%88%98%EC%B6%9C%EC%95%A1+%EC%A6%9D%EA%B0%90%EB%A5%A0+%EC%A0%84%EB%85%84%EB%8C%80%EB%B9%84+%EA%B4%80%EC%84%B8%EC%B2%AD+%EB%AC%B4%EC%97%AD%ED%86%B5%EA%B3%84" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 수출 증감률">🔍</a>
+              <a href="https://tradedata.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="관세청 무역통계">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-export" placeholder="예: 3.1" step="0.1">
         </div>
+
         <div class="manual-item">
-          <label>글로벌 분쟁 강도</label>
+          <label>
+            글로벌 분쟁 강도
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 뉴스: 현재 진행 중인 전쟁·분쟁 건수 파악 -->
+              <a href="https://www.google.com/search?q=ongoing+wars+conflicts+world+2025+how+many+active" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 현재 진행 중 전쟁·분쟁 현황">🔍</a>
+              <a href="https://acleddata.com/dashboard/" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="ACLED 분쟁 대시보드">↗</a>
+            </span>
+          </label>
           <select id="input-conflict">
             <option value="">선택</option>
             <option value="low">낮음</option>
@@ -339,24 +379,64 @@
             <option value="critical">매우 높음</option>
           </select>
         </div>
+
         <div class="manual-item">
-          <label>북한 도발 (이달 건수)</label>
+          <label>
+            북한 도발 (이달 건수)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 뉴스: 이달 북한 미사일·포사격 등 도발 건수 확인 -->
+              <a href="https://www.google.com/search?q=North+Korea+missile+launch+provocation+2025+this+month+how+many+times" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 북한 도발 건수">🔍</a>
+              <a href="https://www.unikorea.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="통일부">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-nk" placeholder="예: 0" min="0" max="10">
         </div>
+
         <div class="manual-item">
-          <label>외교 접촉 (이달 건수)</label>
+          <label>
+            외교 접촉 (이달 건수)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 뉴스: 이달 한국 정상·장관급 외교 접촉 횟수 파악 -->
+              <a href="https://www.google.com/search?q=%ED%95%9C%EA%B5%AD+%EC%99%B8%EA%B5%90%EC%9E%A5%EA%B4%80+%EC%A0%95%EC%83%81%ED%9A%8C%EB%8B%B4+%ED%9A%8C%EB%8B%B4+2025+%EC%9D%B4%EB%B2%88%EB%8B%AC" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 외교 접촉 건수">🔍</a>
+              <a href="https://www.mofa.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="외교부">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-diploma" placeholder="예: 3" min="0" max="20">
         </div>
+
         <div class="manual-item">
-          <label>CSI <a href="https://ecos.bok.or.kr" target="_blank" style="color:var(--text3);font-size:10px;">↗</a></label>
+          <label>
+            소비자심리지수 CSI
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글: 한국은행 소비자심리지수 최신 발표 수치 검색 -->
+              <a href="https://www.google.com/search?q=%ED%95%9C%EA%B5%AD%EC%9D%80%ED%96%89+%EC%86%8C%EB%B9%84%EC%9E%90%EC%8B%AC%EB%A6%AC%EC%A7%80%EC%88%98+%EC%B5%9C%EC%8B%A0+%EB%AA%87%EC%A0%90+2025" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 CSI 수치">🔍</a>
+              <a href="https://ecos.bok.or.kr/#/SearchStat" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="한국은행 ECOS">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-csi" placeholder="예: 94.2" step="0.1">
         </div>
+
         <div class="manual-item">
-          <label>발언 톤 — 대결 비율 (%)</label>
+          <label>
+            발언 톤 — 대결 비율 (%)
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 뉴스: 최근 북미·남북 간 강경/위협 발언 빈도 파악 -->
+              <a href="https://www.google.com/search?q=North+Korea+US+hostile+threatening+statement+warning+2025+recent" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최근 대결 발언 동향">🔍</a>
+              <a href="https://www.un.org/press/en" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="UN 발언">↗</a>
+            </span>
+          </label>
           <input type="number" id="input-tone" placeholder="예: 62" min="0" max="100">
         </div>
+
         <div class="manual-item">
-          <label>말·행동 간극</label>
+          <label>
+            말·행동 간극
+            <span style="margin-left:auto;display:flex;gap:4px;">
+              <!-- 구글 뉴스: 북한 대화 제스처 vs 실제 군사행동 간 괴리 파악 -->
+              <a href="https://www.google.com/search?q=North+Korea+diplomacy+signal+vs+military+action+gap+contradiction+2025" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 북한 말·행동 간극 동향">🔍</a>
+              <a href="https://iiss.org" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="IISS">↗</a>
+            </span>
+          </label>
           <select id="input-gap">
             <option value="">선택</option>
             <option value="low">낮음 (일치)</option>
@@ -364,6 +444,7 @@
             <option value="high">높음 (불일치)</option>
           </select>
         </div>
+
       </div>
       <button class="apply-btn" onclick="applyManual()">▶ 적용</button>
     </div>
@@ -373,9 +454,7 @@
   <div class="footer">
     본 현황판은 상수학적 프레임과 현대 데이터 지표를 결합한 개인 분석 도구입니다.<br>
     <b style="color:var(--text2);">완전 자동</b>: 환율(Open Exchange Rates CORS OK) · 태양흑점(NOAA SWPC CORS OK)<br>
-    <b style="color:#7adfc0;">조건부 자동</b>: WTI 국제유가 — EIA 공식 API, 무료 키 1회 설정 시 자동 (1거래일 지연)<br>
-    <b style="color:var(--blue);">AI 분석</b>: GDELT 무료 API + Claude → 北도발 · 외교 · 분쟁강도 · 발언톤 · 간극 자동 추출<br>
-    <b style="color:var(--text3);">수동 유지</b>: VIX · CSI · 외국인순매수(KRX) · 수출증감률(월간)
+    <b style="color:var(--text3);">수동 유지</b>: WTI 국제유가(선물가 CL=F 기준, <a href="https://finance.yahoo.com/quote/CL%3DF/" target="_blank" style="color:var(--text3);">↗ Yahoo Finance</a>) · VIX · CSI · 외국인순매수(KRX) · 수출증감률(월간)
   </div>
 
 </div>
@@ -460,45 +539,14 @@ async function loadSolar() {
 }
 
 // ══════════════════════════════════════════
-// 3. WTI 국제유가 — EIA(美 에너지정보청) 공식 API
-//    무료 키 1회 발급 필요 (https://www.eia.gov/opendata/register.php)
-//    RWTC = Cushing, OK WTI Spot Price FOB, Daily ($/배럴)
-//    ※ 1거래일 지연된 현물가 (실시간 선물가 아님)
+// 3. WTI 국제유가 — 수동 입력 전용
+//    아래 ↗ 링크에서 확인 후 수동 입력 패널에 입력하세요
+//    선물가(NYMEX CL=F): https://finance.yahoo.com/quote/CL%3DF/
 // ══════════════════════════════════════════
-function getEiaKey() { return 'z148hgRRHIk6shfZy6fG11Rx2DoqvPPesXoDTC2D'; }
-
-
-
 async function loadWTI() {
-  const key = getEiaKey();
-  if (!key) { dot('wti', 'idle'); return null; } // 키 없음 → 수동 모드 유지
-
+  // 수동 전용 — API 호출 없음
   dot('wti', 'idle');
-  try {
-    const url = 'https://api.eia.gov/v2/petroleum/pri/spt/data/'
-      + '?api_key=' + encodeURIComponent(key)
-      + '&frequency=daily&data[0]=value&facets[series][]=RWTC'
-      + '&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=1';
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    const row = json?.response?.data?.[0];
-    const val = parseFloat(row?.value);
-    if (isNaN(val)) throw new Error('값 없음');
-
-    setWTI(val);
-    document.getElementById('wti-status').innerHTML += ` · ${row.period} 기준 (1일 지연)`;
-    document.getElementById('wti-badge').className = 'badge badge-auto';
-    document.getElementById('wti-badge').textContent = '자동';
-    document.getElementById('wti-src').textContent = 'EIA (공식)';
-    dot('wti', 'ok');
-    return val;
-  } catch (e) {
-    dot('wti', 'err');
-    document.getElementById('wti-status').innerHTML =
-      '<span class="badge badge-warn">연결 오류</span> EIA API 응답 없음';
-    return null;
-  }
+  return null;
 }
 
 // ══════════════════════════════════════════
@@ -712,7 +760,14 @@ function applyManual() {
   const gap=document.getElementById('input-gap').value;
 
   if(!isNaN(vix)) setVIX(vix);
-  if(!isNaN(wti)) setWTI(wti);
+  if(!isNaN(wti)) {
+    setWTI(wti);
+    document.getElementById('wti-status').textContent = '수동 입력값 (선물가 CL=F 기준)';
+    document.getElementById('wti-badge').className = 'badge badge-neutral';
+    document.getElementById('wti-badge').textContent = '수동';
+    document.getElementById('wti-src').textContent = '수동(선물가)';
+    dot('wti', 'ok');
+  }
   if(!isNaN(csi)) setCSI(csi);
   if(!isNaN(foreign)) {
     document.getElementById('foreign-value').textContent=(foreign>=0?'+':'')+foreign.toLocaleString()+'억';
