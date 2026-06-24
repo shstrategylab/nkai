@@ -219,14 +219,14 @@
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 외국인 순매수 (억원)</div>
         <div class="mcard-value" id="foreign-value">—</div>
         <div class="mcard-sub" id="foreign-status">수동 입력</div>
-        <a class="mcard-link" href="https://www.krx.co.kr" target="_blank">↗ KRX</a>
+        <a class="mcard-link" href="https://finance.daum.net/domestic/investors" target="_blank">↗ 다음 금융 — 투자자별 동향</a>
       </div>
 
       <div class="mcard">
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 수출 증감률 (전년비)</div>
         <div class="mcard-value" id="export-value">—</div>
         <div class="mcard-sub" id="export-status">월간 발표 후 입력</div>
-        <a class="mcard-link" href="https://www.motie.go.kr" target="_blank">↗ 산업부</a>
+        <a class="mcard-link" href="https://ko.tradingeconomics.com/south-korea/exports" target="_blank">↗ Trading Economics — 수출 증감률</a>
       </div>
 
       <div class="mcard">
@@ -249,7 +249,7 @@
         <div class="bar-label">정상외교 접촉 (월간) <span class="badge badge-info" style="font-size:9px;margin-left:4px;">AI분석</span></div>
         <div class="bar-wrap"><div class="bar-fill" id="diploma-bar" style="width:0%;background:var(--teal);"></div></div>
         <div class="bar-note" id="diploma-note">AI 분석 버튼 클릭</div>
-        <a class="bar-link" href="https://www.mofa.go.kr" target="_blank">↗ 외교부</a>
+        <a class="bar-link" href="https://www.mofa.go.kr/www/brd/m_29514/list.do" target="_blank">↗ 외교부 — 접촉 목록</a>
       </div>
     </div>
   </div>
@@ -269,35 +269,35 @@
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 소비자심리지수 CSI</div>
         <div class="mcard-value" id="csi-value">—</div>
         <div class="mcard-sub" id="csi-status">수동 입력</div>
-        <a class="mcard-link" href="https://ecos.bok.or.kr" target="_blank">↗ 한국은행 ECOS</a>
+        <a class="mcard-link" href="https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1058" target="_blank">↗ e-나라지표 · <span style="font-size:9px;">한국은행 스냅샷</span></a>
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">AI분석 · UN기준</span>
-        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 발언 톤 — 대결 % <span style="color:var(--text3);font-size:9px;">(북미·UN)</span></div>
+        <span class="mcard-src">UN 발언록 기준</span>
+        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 대결 % <span style="color:var(--text3);font-size:9px;">(북미·UN 발언 톤)</span></div>
         <div class="mcard-value" id="tone-value">—</div>
         <div class="mcard-sub" id="tone-status">AI 분석 버튼 클릭</div>
         <a class="mcard-link" href="https://www.un.org/press/en" target="_blank">↗ UN 발언록</a>
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">수동</span>
-        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 발언 톤 — 대결 % <span style="color:var(--text3);font-size:9px;">(국내 정치)</span></div>
+        <span class="mcard-src">빅카인즈 기준</span>
+        <div class="mcard-label"><span class="badge badge-neutral">수동</span> 대결 % <span style="color:var(--text3);font-size:9px;">(국내 정치 발언 톤)</span></div>
         <div class="mcard-value" id="tone-dom-value">—</div>
         <div class="mcard-sub" id="tone-dom-status">수동 입력</div>
         <a class="mcard-link" href="https://www.bigkinds.or.kr" target="_blank">↗ 빅카인즈</a>
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">AI분석 · IISS</span>
-        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 말·행동 간극 <span style="color:var(--text3);font-size:9px;">(북·국제)</span></div>
+        <span class="mcard-src">IISS 기준</span>
+        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 말·행동 간극 <span style="color:var(--text3);font-size:9px;">(북한·국제)</span></div>
         <div class="mcard-value" id="gap-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="gap-status">AI 분석 버튼 클릭</div>
         <a class="mcard-link" href="https://iiss.org" target="_blank">↗ IISS</a>
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">수동</span>
+        <span class="mcard-src">국회 의안정보 기준</span>
         <div class="mcard-label"><span class="badge badge-neutral">수동</span> 말·행동 간극 <span style="color:var(--text3);font-size:9px;">(국내 정치)</span></div>
         <div class="mcard-value" id="gap-dom-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="gap-dom-status">수동 입력</div>
@@ -358,9 +358,8 @@
           <label>
             외국인 순매수 (억원)
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 네이버 증권 투자자별 매매현황 — 수치 테이블 바로 보임 -->
-              <a href="https://finance.naver.com/sise/investorDealTrendDay.naver?bizdate=&sosok=0" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="네이버 증권: 투자자별 매매현황">🔍</a>
-              <a href="https://www.krx.co.kr/main/main.jsp" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="KRX">↗</a>
+              <a href="https://finance.daum.net/domestic/investors" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="다음 금융: 외국인 순매수">🔍</a>
+              <a href="https://finance.daum.net/domestic/investors" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="다음 금융: 투자자별 동향">↗</a>
             </span>
           </label>
           <input type="number" id="input-foreign" placeholder="예: -4200">
@@ -370,9 +369,8 @@
           <label>
             수출 증감률 (%, 전년비)
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글: 관세청 수출입 무역통계 — 월간 수치 직접 검색 -->
-              <a href="https://www.google.com/search?q=2026년+5월+수출+증감률+%25+산업통상자원부" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 월 수출 증감률 수치">🔍</a>
-              <a href="https://tradedata.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="관세청 무역통계">↗</a>
+              <a href="https://ko.tradingeconomics.com/south-korea/exports" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Trading Economics: 한국 수출 증감률">🔍</a>
+              <a href="https://ko.tradingeconomics.com/south-korea/exports" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="Trading Economics">↗</a>
             </span>
           </label>
           <input type="number" id="input-export" placeholder="예: 3.1" step="0.1">
@@ -412,9 +410,8 @@
           <label>
             외교 접촉 (이달 건수)
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글 뉴스: 이달 한국 정상·장관급 외교 접촉 횟수 파악 -->
-              <a href="https://www.google.com/search?q=%222026년+6월%22+한국+정상회담+OR+외교장관+회담+횟수" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 외교 접촉 건수">🔍</a>
-              <a href="https://www.mofa.go.kr" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="외교부">↗</a>
+              <a href="https://www.mofa.go.kr/www/brd/m_29514/list.do" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="외교부: 외교장관 접촉 목록">🔍</a>
+              <a href="https://www.mofa.go.kr/www/brd/m_29514/list.do" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="외교부">↗</a>
             </span>
           </label>
           <input type="number" id="input-diploma" placeholder="예: 3" min="0" max="20">
@@ -424,9 +421,8 @@
           <label>
             소비자심리지수 CSI
             <span style="margin-left:auto;display:flex;gap:4px;">
-              <!-- 구글: 한국은행 소비자심리지수 최신 발표 수치 검색 -->
-              <a href="https://www.google.com/search?q=한국은행+소비자심리지수+2026년+5월+발표+수치" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 최신 CSI 발표 수치">🔍</a>
-              <a href="https://ecos.bok.or.kr/#/SearchStat" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="한국은행 ECOS">↗</a>
+              <a href="https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1058" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="e-나라지표: 소비자심리지수">🔍</a>
+              <a href="https://snapshot.bok.or.kr/dashboard/C8" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="한국은행 스냅샷 C8">↗</a>
             </span>
           </label>
           <input type="number" id="input-csi" placeholder="예: 94.2" step="0.1">
@@ -434,7 +430,7 @@
 
         <div class="manual-item">
           <label>
-            발언 톤 — 대결 비율 % (UN·북미)
+            (UN·북미) 대결 발언톤을 비율로 정한다면 %인가?
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- UN 안보리 보도자료: 북한·미국 발언 강경 비율 파악 -->
               <a href="https://www.google.com/search?q=%222026년+6월%22+UN+안보리+북한+미국+강경+발언+횟수+OR+성명" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 UN 대결 발언 빈도">🔍</a>
@@ -446,7 +442,7 @@
 
         <div class="manual-item">
           <label>
-            발언 톤 — 대결 비율 % (국내 정치)
+            한국 정치 대결 발언톤을 비율로 정한다면 %인가?
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글: 여야 대결·충돌 발언 비율 — 빅카인즈 or 뉴스 검색 -->
               <a href="https://www.google.com/search?q=%222026년+6월%22+국회+여야+강경+발언+OR+막말+OR+충돌+횟수" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 이달 여야 대결 발언 빈도">🔍</a>
@@ -458,7 +454,7 @@
 
         <div class="manual-item">
           <label>
-            말·행동 간극 (북한·국제)
+            (북한·국제) 말·행동 간극은 낮음/중간/높음 선택한다면?
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글: 북한 대화 제스처 vs 실제 군사행동 간 괴리 -->
               <a href="https://www.google.com/search?q=북한+대화+제안+동시+군사훈련+OR+미사일+2026+6월" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 북한 대화vs군사행동 동시 사례">🔍</a>
@@ -475,7 +471,7 @@
 
         <div class="manual-item">
           <label>
-            말·행동 간극 (국내 정치)
+            (국내 정치) 말·행동 간극은 낮음/중간/높음 선택한다면?
             <span style="margin-left:auto;display:flex;gap:4px;">
               <!-- 구글: 여야 공약·정책 발표 vs 실제 입법·처리 결과 간 괴리 -->
               <a href="https://www.google.com/search?q=%222026%22+국회+법안+처리율+OR+공약+이행률+%25+여야" target="_blank" style="color:var(--text3);font-size:10px;text-decoration:none;" title="구글: 국회 법안 처리율·공약 이행률 수치">🔍</a>
