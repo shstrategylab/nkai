@@ -732,12 +732,46 @@ function recalc() {
 
   const bar2 = document.getElementById('alert-bar');
   const warns = [];
+
+  // ── 기존 6개 ──
   if (!isNaN(vix) && vix >= 30) warns.push(`VIX ${vix.toFixed(1)} (공포)`);
   if (!isNaN(wti) && wti >= 90) warns.push(`WTI $${wti.toFixed(1)} (고유가)`);
   if (conflict === 'high' || conflict === 'critical') warns.push('분쟁 고강도');
   if (nk >= 3) warns.push(`北 도발 ${nk}건`);
   if (paradox) warns.push('⚠ 수출호조 + 원화약세 역설 (외부개입 의심)');
   if (foreignExitNotGeo) warns.push('외국인 매도 = 차익실현 가능 (재진입 추적 필요)');
+
+  // ── 추가 6개 ──
+
+  // CSI 소비자심리 위축 (85 이하 = 심각)
+  const csiTxt2 = document.getElementById('csi-value').textContent;
+  const csi2 = parseFloat(csiTxt2) || NaN;
+  if (!isNaN(csi2) && csi2 <= 85) warns.push(`CSI ${csi2.toFixed(1)} (심각 위축)`);
+  else if (!isNaN(csi2) && csi2 <= 90) warns.push(`CSI ${csi2.toFixed(1)} (민심 위축)`);
+
+  // 글로벌 발언 톤 대결 70% 이상
+  const toneTxt2 = document.getElementById('tone-value').textContent;
+  const tone2 = parseFloat(toneTxt2.replace('대결 ','').replace('%','')) || NaN;
+  if (!isNaN(tone2) && tone2 >= 70) warns.push(`글로벌 발언 대결 ${tone2}% (고강도 긴장)`);
+
+  // 국내 정치권 발언 톤 대결 70% 이상
+  const toneDomTxt = document.getElementById('tone-dom-value').textContent;
+  const toneDom2 = parseFloat(toneDomTxt.replace('대결 ','').replace('%','')) || NaN;
+  if (!isNaN(toneDom2) && toneDom2 >= 70) warns.push(`국내 정치 대결 ${toneDom2}% (극단 대립)`);
+
+  // 말·행동 간극 높음 (글로벌)
+  const gapTxt2 = document.getElementById('gap-value').textContent;
+  if (gapTxt2.includes('불일치')) warns.push('글로벌 말·행동 간극 高 (기만 가능성)');
+
+  // 정상외교 0건 (외교 고립)
+  if (diploma === 0 && document.getElementById('diploma-note').textContent.includes('이달')) {
+    warns.push('정상외교 0건 (외교 고립 신호)');
+  }
+
+  // 태양흑점 극대기 (F10.7 지수 180 이상)
+  const solarTxt = document.getElementById('solar-value').textContent;
+  const solarV = parseFloat(solarTxt) || NaN;
+  if (!isNaN(solarV) && solarV >= 180) warns.push(`태양흑점 F10.7=${solarV.toFixed(0)} (극대기 · 교란 주의)`);
 
   if (warns.length === 0) {
     // 안정 구간에도 주요 수치 요약 표시 (초안 방식)
