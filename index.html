@@ -71,6 +71,8 @@
   .badge-warn    { background:var(--amber-bg); color:#d4b46a;      border:0.5px solid var(--amber); }
   .badge-ok      { background:var(--teal-bg);  color:var(--teal);  border:0.5px solid var(--teal); }
   .badge-info    { background:var(--blue-bg);  color:var(--blue);  border:0.5px solid var(--blue); }
+  .badge-amber   { background:var(--amber-bg); color:#d4922a;      border:0.5px solid var(--amber); }
+  .report-link:hover { opacity:0.75; text-decoration:underline; cursor:pointer; }
   .badge-neutral { background:var(--bg3);      color:var(--text3); border:0.5px solid var(--border2); }
   .badge-auto    { background:rgba(42,170,128,0.15); color:#7adfc0; border:0.5px solid #2aaa80; }
 
@@ -91,11 +93,7 @@
   .threshold-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--text3); }
 
   /* AI 분석 패널 */
-  .ai-panel { background:var(--bg2); border:0.5px solid var(--blue); border-radius:8px; padding:16px; margin-bottom:20px; }
-  .ai-panel-title { font-size:12px; color:var(--blue); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
   .ai-result { font-size:12px; color:var(--text2); line-height:1.7; }
-  .ai-loading { font-size:12px; color:var(--text3); animation:pulse 1.5s ease-in-out infinite; }
-  .ai-keywords { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
   .ai-kw { font-size:10px; padding:2px 8px; border-radius:99px; background:var(--bg3); color:var(--text3); border:0.5px dashed var(--border2); }
 
 
@@ -153,7 +151,7 @@
     </div>
     <div class="header-right">
       <button class="btn btn-border" onclick="loadAllData()">↻ 데이터 새로고침</button>
-      <button class="btn btn-ai" id="ai-btn" onclick="runAIAnalysis()">⚡ AI 뉴스 분석</button>
+      <button class="btn btn-ai" onclick="scrollToPrompt()">📋 리포트 분석</button>
       <div class="last-updated" id="last-updated"></div>
     </div>
   </div>
@@ -164,7 +162,6 @@
     <div class="chip"><span class="sdot idle" id="dot-vix"></span> VIX</div>
     <div class="chip"><span class="sdot idle" id="dot-wti"></span> WTI</div>
     <div class="chip"><span class="sdot idle" id="dot-solar"></span> 태양</div>
-    <div class="chip"><span class="sdot idle" id="dot-ai"></span> AI분석</div>
   </div>
 
   <!-- 경보 바 -->
@@ -252,8 +249,8 @@
       </div>
 
       <div class="mcard">
-        <span class="mcard-src">AI분석</span>
-        <div class="mcard-label"><span class="badge badge-info">AI분석</span> 글로벌 분쟁 강도</div>
+        <span class="mcard-src">수동입력</span>
+        <div class="mcard-label"><span class="badge badge-amber report-link" onclick="scrollToPrompt()" style="cursor:pointer;" title="리포트 분석으로 이동">📋 리포트 분석</span> 글로벌 분쟁 강도</div>
         <div class="mcard-value" id="conflict-value" style="font-size:16px;">—</div>
         <div class="mcard-sub" id="conflict-status">AI 분석 버튼 클릭</div>
         <a class="mcard-link" href="https://acleddata.com/dashboard/" target="_blank">↗ ACLED</a>
@@ -262,13 +259,13 @@
     </div>
     <div class="grid grid-2" style="margin-top:10px;">
       <div class="bar-card">
-        <div class="bar-label">북한 도발 동향 (월간) <span class="badge badge-info" style="font-size:9px;margin-left:4px;">AI분석</span></div>
+        <div class="bar-label">북한 도발 동향 (월간) <span class="badge badge-amber report-link" style="font-size:9px;margin-left:4px;cursor:pointer;" onclick="scrollToPrompt()" title="리포트 분석으로 이동">📋 리포트 분석</span></div>
         <div class="bar-wrap"><div class="bar-fill" id="nk-bar" style="width:0%;background:var(--amber);"></div></div>
         <div class="bar-note" id="nk-note">AI 분석 버튼 클릭</div>
         <a class="bar-link" href="https://www.unikorea.go.kr" target="_blank">↗ 통일부</a>
       </div>
       <div class="bar-card">
-        <div class="bar-label">정상외교 접촉 (월간) <span class="badge badge-info" style="font-size:9px;margin-left:4px;">AI분석</span></div>
+        <div class="bar-label">정상외교 접촉 (월간) <span class="badge badge-amber report-link" style="font-size:9px;margin-left:4px;cursor:pointer;" onclick="scrollToPrompt()" title="리포트 분석으로 이동">📋 리포트 분석</span></div>
         <div class="bar-wrap"><div class="bar-fill" id="diploma-bar" style="width:0%;background:var(--teal);"></div></div>
         <div class="bar-note" id="diploma-note">AI 분석 버튼 클릭</div>
         <a class="bar-link" href="https://www.mofa.go.kr/www/brd/m_29514/list.do" target="_blank">↗ 외교부 — 접촉 목록</a>
@@ -283,7 +280,7 @@
     <div class="axis-header">
       <div class="axis-dot dot-teal"></div>
       <div class="axis-title">인수축 (人數) — 언어·행동·민심 지표</div>
-      <span class="axis-badge">AI분석</span>
+      <span class="axis-badge report-link" onclick="scrollToPrompt()" style="cursor:pointer;" title="리포트 분석으로 이동">📋 리포트 분석</span>
     </div>
     <div class="grid grid-4">
 
@@ -332,13 +329,6 @@
   </div>
 
   <hr class="divider">
-
-  <!-- AI 분석 결과 -->
-  <div class="ai-panel" id="ai-panel" style="display:none;">
-    <div class="ai-panel-title">⚡ AI 뉴스 분석 결과 <span id="ai-panel-time" style="font-size:10px;color:var(--text3);margin-left:auto;"></span></div>
-    <div id="ai-result-text" class="ai-result"></div>
-    <div id="ai-keywords" class="ai-keywords"></div>
-  </div>
 
   <!-- 수동 입력 -->
   <div class="manual-section">
@@ -642,90 +632,23 @@ async function loadWTI() {
 }
 
 // ══════════════════════════════════════════
-// 4. GDELT + Claude API로 AI 분석
-//    GDELT: 완전 무료, 키 없음, CORS OK
+// 리포트 분석 섹션으로 스크롤
 // ══════════════════════════════════════════
-async function runAIAnalysis() {
-  const btn = document.getElementById('ai-btn');
-  btn.disabled = true; btn.textContent = '⏳ 분석 중...';
-  dot('ai', 'idle');
-
-  const panel = document.getElementById('ai-panel');
-  panel.style.display = 'block';
-  document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">GDELT 뉴스 수집 중...</span>';
-
-  try {
-    // GDELT v2 무료 API — CORS OK, 키 불필요
-    // 북한·한반도 관련 최근 기사 요약 수집
-    const now = new Date();
-    const gdeltQueries = [
-      // 북한 도발 관련
-      'https://api.gdeltproject.org/api/v2/summary/summary?d=web&t=summary&k=north+korea+missile+provocation&ts=custom&sdt=' + getGdeltDate(7) + '&edt=' + getGdeltDate(0) + '&svt=zoom&stc=yes&ssc=yes&sshp=1&fra=1&frm=1&fsv=1&frb=1&fsa=1&fs=yes&fdb=yes&fdl=yes',
-      // 글로벌 분쟁
-      'https://api.gdeltproject.org/api/v2/summary/summary?d=web&t=summary&k=global+conflict+war&ts=custom&sdt=' + getGdeltDate(3) + '&edt=' + getGdeltDate(0) + '&svt=zoom&stc=yes&ssc=yes&sshp=1&fra=1',
-    ];
-
-    // GDELT 기사 수집
-    let gdeltSummary = '';
-    for (const url of gdeltQueries) {
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        // GDELT는 HTML 반환, 텍스트에서 핵심 키워드 추출
-        const stripped = text.replace(/<[^>]*>/g,'').replace(/\s+/g,' ').substring(0,500);
-        gdeltSummary += stripped + '\n';
-      } catch(e) { continue; }
-    }
-
-    // GDELT 데이터로 규칙 기반 자동 분석
-    document.getElementById('ai-result-text').innerHTML = '<span class="ai-loading">규칙 기반 분석 중...</span>';
-    const ruleResult = ruleBasedAnalysis(gdeltSummary);
-    applyAIResult(ruleResult);
-    document.getElementById('ai-result-text').textContent = ruleResult.summary;
-    document.getElementById('ai-panel-time').textContent = now.toLocaleTimeString('ko-KR');
-    dot('ai', 'ok');
-    recalc();
-
-  } catch(e) {
-    document.getElementById('ai-result-text').textContent = '분석 실패: ' + e.message;
-    dot('ai', 'err');
-  } finally {
-    btn.disabled = false; btn.textContent = '⚡ AI 뉴스 분석';
+function scrollToPrompt() {
+  const el = document.querySelector('.prompt-section');
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // 펼쳐져 있지 않으면 자동으로 열기
+  const body = document.getElementById('prompt-body');
+  const toggle = document.getElementById('prompt-toggle');
+  if (body && !body.classList.contains('open')) {
+    body.classList.add('open');
+    if (toggle) toggle.textContent = '▲ 접기';
   }
 }
 
-function getGdeltDate(daysAgo) {
-  const d = new Date(); d.setDate(d.getDate() - daysAgo);
-  return d.toISOString().replace(/[-:T]/g,'').substring(0,14);
-}
-
-// GDELT 텍스트 기반 규칙 분석 (AI 없이 키워드 카운팅)
-function ruleBasedAnalysis(text) {
-  const t = text.toLowerCase();
-  const nkKeywords = ['missile','launch','nuclear','provocation','north korea fired','ballistic','icbm','weapon'];
-  const conflictKeywords = ['war','conflict','attack','strike','casualties','battle','offensive'];
-  const diplomacyKeywords = ['summit','meeting','talks','negotiation','diplomacy','dialogue'];
-  const aggressiveKeywords = ['condemn','sanction','threat','denounce','warning','retaliation'];
-
-  const nk_count = nkKeywords.filter(k => t.includes(k)).length;
-  const conflictScore = conflictKeywords.filter(k => t.includes(k)).length;
-  const diplo = diplomacyKeywords.filter(k => t.includes(k)).length;
-  const aggr = aggressiveKeywords.filter(k => t.includes(k)).length;
-
-  const conflict = conflictScore >= 5 ? 'critical' : conflictScore >= 3 ? 'high' : conflictScore >= 1 ? 'mid' : 'low';
-  const tone_pct = Math.min(100, aggr * 12 + nk_count * 8);
-  const gap = nk_count >= 3 ? 'high' : nk_count >= 1 ? 'mid' : 'low';
-
-  return {
-    nk_count: Math.min(nk_count, 5),
-    diploma_count: diplo,
-    conflict,
-    tone_pct,
-    gap,
-    summary: `GDELT 뉴스 분석 (규칙 기반): 북한 관련 ${nk_count}건 신호, 분쟁강도 ${conflict}, 대결 발언 ${tone_pct}%.`,
-    keywords: nkKeywords.filter(k => t.includes(k)).slice(0,3).concat(conflictKeywords.filter(k=>t.includes(k)).slice(0,2))
-  };
-}
+// ══════════════════════════════════════════
+// 임계점 계산 & 경보
 
 // ══════════════════════════════════════════
 // 값 설정 함수
@@ -749,37 +672,6 @@ function setCSI(c) {
   const b = c>=100?'badge-ok':c>=90?'badge-warn':'badge-danger';
   const l = c>=100?'긍정':c>=90?'위축':'심각 위축';
   document.getElementById('csi-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
-}
-
-function applyAIResult(r) {
-  if (r.nk_count !== undefined) {
-    const nk = r.nk_count;
-    document.getElementById('nk-bar').style.width = Math.min(nk*15,100)+'%';
-    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk===0?'저강도':nk<=2?'주의':'고강도'} (AI)`;
-  }
-  if (r.diploma_count !== undefined) {
-    const d = r.diploma_count;
-    document.getElementById('diploma-bar').style.width = Math.min(d*12,100)+'%';
-    document.getElementById('diploma-note').textContent = `이달 ${d}건 · ${d>=5?'활발':d>=2?'보통':'저조'} (AI)`;
-  }
-  if (r.conflict) {
-    const m = {low:['낮음','badge-ok'],mid:['중간','badge-warn'],high:['높음','badge-danger'],critical:['매우 높음','badge-danger']};
-    const [l,b] = m[r.conflict]||['—','badge-neutral'];
-    document.getElementById('conflict-value').textContent = l;
-    document.getElementById('conflict-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
-  }
-  if (r.tone_pct !== undefined) {
-    const t = r.tone_pct;
-    document.getElementById('tone-value').textContent = '대결 '+t+'%';
-    const b = t>=70?'badge-danger':t>=50?'badge-warn':'badge-ok';
-    document.getElementById('tone-status').innerHTML = `<span class="badge ${b}">${t>=70?'고강도':t>=50?'긴장':'협력 우세'}</span>`;
-  }
-  if (r.gap) {
-    const m = {low:['낮음 (일치)','badge-ok'],mid:['중간','badge-warn'],high:['높음 (불일치)','badge-danger']};
-    const [l,b] = m[r.gap]||['—','badge-neutral'];
-    document.getElementById('gap-value').textContent = l;
-    document.getElementById('gap-status').innerHTML = `<span class="badge ${b}">${l}</span>`;
-  }
 }
 
 // ══════════════════════════════════════════
@@ -931,8 +823,36 @@ function applyManual() {
     document.getElementById('gap-dom-value').textContent = lg;
     document.getElementById('gap-dom-status').innerHTML = `<span class="badge ${bg}">${lg}</span>`;
   }
-  applyAIResult({ conflict, nk_count:nk, diploma_count:diploma,
-    tone_pct:isNaN(tone)?undefined:tone, gap });
+  // 글로벌 분쟁 강도
+  if (conflict) {
+    const mc = {low:['낮음','badge-ok'],mid:['중간','badge-warn'],high:['높음','badge-danger'],critical:['매우 높음','badge-danger']};
+    const [lc,bc] = mc[conflict]||['—','badge-neutral'];
+    document.getElementById('conflict-value').textContent = lc;
+    document.getElementById('conflict-status').innerHTML = `<span class="badge ${bc}">${lc}</span>`;
+  }
+  // 북한 도발
+  if (!isNaN(nk)) {
+    document.getElementById('nk-bar').style.width = Math.min(nk*15,100)+'%';
+    document.getElementById('nk-note').textContent = `이달 ${nk}건 · ${nk===0?'저강도':nk<=2?'주의':'고강도'}`;
+  }
+  // 정상외교
+  if (!isNaN(diploma)) {
+    document.getElementById('diploma-bar').style.width = Math.min(diploma*12,100)+'%';
+    document.getElementById('diploma-note').textContent = `이달 ${diploma}건 · ${diploma>=5?'활발':diploma>=2?'보통':'저조'}`;
+  }
+  // 글로벌 발언 톤
+  if (!isNaN(tone)) {
+    document.getElementById('tone-value').textContent = '대결 '+tone+'%';
+    const bt = tone>=70?'badge-danger':tone>=50?'badge-warn':'badge-ok';
+    document.getElementById('tone-status').innerHTML = `<span class="badge ${bt}">${tone>=70?'고강도':tone>=50?'긴장':'협력 우세'}</span>`;
+  }
+  // 글로벌 말·행동 간극
+  if (gap) {
+    const mg2 = {low:['낮음 (일치)','badge-ok'],mid:['중간','badge-warn'],high:['높음 (불일치)','badge-danger']};
+    const [lg2,bg2] = mg2[gap]||['—','badge-neutral'];
+    document.getElementById('gap-value').textContent = lg2;
+    document.getElementById('gap-status').innerHTML = `<span class="badge ${bg2}">${lg2}</span>`;
+  }
   recalc();
   saveToLocal();
 }
